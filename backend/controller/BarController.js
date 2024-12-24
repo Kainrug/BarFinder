@@ -70,25 +70,8 @@ const getBarsByLocation = async (req, res) => {
 	}
 }
 
-const getSortedBars = async (req, res) => {
-	try {
-		const { sortBy = 'name', order = 'ASC' } = req.query
-		const bars = await Bar.findAll({ order: [[sortBy, order]] })
-		res.json(bars)
-	} catch (error) {
-		res.status(500).json({ message: 'Błąd serwera', error: error.message })
-	}
-}
-
 const getBarsByName = async (req, res) => {
-	console.log('Dotarło do getBarsByName')
-	const { name } = req.query
-	console.log('Parametr name:', name)
-
-	if (!name) {
-		return res.status(400).json({ message: "Parametr 'name' jest wymagany." })
-	}
-
+	const { name } = req.body
 	try {
 		const bars = await Bar.findAll({
 			where: {
@@ -97,12 +80,9 @@ const getBarsByName = async (req, res) => {
 				},
 			},
 		})
-		console.log('Znalezione bary:', bars)
-
 		if (bars.length === 0) {
 			return res.status(404).json({ message: 'Nie znaleziono barów o podanej nazwie.' })
 		}
-
 		res.json(bars)
 	} catch (error) {
 		res.status(500).json({ message: 'Błąd serwera', error: error.message })
@@ -116,6 +96,5 @@ module.exports = {
 	deleteBar,
 	getBarsByLocation,
 	updateBar,
-	getSortedBars,
 	getBarsByName,
 }

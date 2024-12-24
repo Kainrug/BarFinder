@@ -4,13 +4,26 @@ const { Model } = require('sequelize')
 module.exports = (sequelize, DataTypes) => {
 	class Role extends Model {
 		static associate(models) {
-			Role.hasOne(models.User, { foreignKey: 'Role_ID' })
+			Role.hasMany(models.User, { foreignKey: 'Role_ID' })
 		}
 	}
 
 	Role.init(
 		{
-			role: DataTypes.STRING,
+			id: {
+				type: DataTypes.INTEGER,
+				allowNull: false,
+				defaultValue: 1,
+			},
+
+			role: {
+				type: DataTypes.STRING,
+				allowNull: false,
+				unique: true,
+				validate: {
+					isIn: [['Gość', 'Użytkownik', 'Właściciel Baru', 'Admin']],
+				},
+			},
 		},
 		{
 			sequelize,
