@@ -16,7 +16,6 @@ const register = async (req, res) => {
 			return res.status(400).json({ message: 'Nazwa użytkownika jest już zajęta.' })
 		}
 
-		
 		const validRoles = ['Użytkownik', 'Właściciel Baru', 'Gość']
 		if (!validRoles.includes(role)) {
 			return res
@@ -24,16 +23,13 @@ const register = async (req, res) => {
 				.json({ message: 'Nieprawidłowa rola. Możliwe role: "Użytkownik", "Właściciel Baru", "Gość".' })
 		}
 
-		
 		const userRole = await Role.findOne({ where: { role } })
 		if (!userRole) {
 			return res.status(400).json({ message: 'Rola nie istnieje.' })
 		}
 
-		
 		const hashedPassword = await bcrypt.hash(password, 10)
 
-		
 		const newUser = await User.create({
 			username,
 			email,
@@ -55,17 +51,14 @@ const login = async (req, res) => {
 			return res.status(404).json({ message: 'Nie znaleziono użytkownika.' })
 		}
 
-		
 		const isMatch = await bcrypt.compare(password, user.password)
 		if (!isMatch) {
 			return res.status(401).json({ message: 'Nieprawidłowe dane logowania.' })
 		}
 
-		
 		const accessToken = jwt.sign({ id: user.id, role: user.Role.role }, process.env.JWT_SECRET, { expiresIn: '15m' })
 		const refreshToken = jwt.sign({ id: user.id }, process.env.JWT_REFRESH)
 
-		
 		await RefreshToken.create({
 			token: refreshToken,
 			User_ID: user.id,
@@ -90,16 +83,13 @@ const refreshToken = async (req, res) => {
 			return res.status(400).json({ message: 'Brak tokena.' })
 		}
 
-		
 		const storedToken = await RefreshToken.findOne({ where: { token } })
 		if (!storedToken) {
 			return res.status(403).json({ message: 'Nieprawidłowy token.' })
 		}
 
-		
 		const decoded = jwt.verify(token, process.env.JWT_REFRESH)
 
-		
 		const newAccessToken = jwt.sign({ id: decoded.id, role: decoded.role }, process.env.JWT_SECRET, {
 			expiresIn: '15m',
 		})
@@ -115,6 +105,10 @@ const logout = async (req, res) => {
 		const { refreshToken } = req.body
 
 		await RefreshToken.destroy({ where: { token: refreshToken } })
+
+		if (!refreshToken) {
+			return res.status(400).json({ message: 'Brak tokena.' })
+		}
 
 		res.status(204).send()
 	} catch (error) {
