@@ -13,7 +13,8 @@ module.exports = (sequelize, DataTypes) => {
 			id: {
 				type: DataTypes.INTEGER,
 				allowNull: false,
-				defaultValue: 1,
+				autoIncrement: true,
+				primaryKey: true,
 			},
 
 			role: {

@@ -7,11 +7,12 @@ const {
 	deleteMatch,
 	getMatchById,
 } = require('../controller/MatchController.js')
+const { authenticate, authorize } = require('../middleware/auth')
 
 router.get('/match', getMatches)
 router.get('/match/:id', getMatchById)
-router.post('/match', createMatches)
-router.put('/match/:id', updateMatches)
-router.delete('/match/:id', deleteMatch)
+router.post('/match', authenticate, authorize(['Właściciel Baru', 'Admin']), createMatches)
+router.put('/match/:id', authenticate, authorize(['Właściciel Baru', 'Admin']), updateMatches)
+router.delete('/match/:id', authenticate, authorize(['Admin']), deleteMatch)
 
 module.exports = router

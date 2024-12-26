@@ -1,10 +1,13 @@
 const express = require('express')
-const router = express.Router()
-const { getReviews, getReviewsByBar, createReview, deleteReview } = require('../controller/ReviewController')
+const { authenticate, authorize } = require('../middleware/auth')
+const { addReview, getReviews, deleteReview } = require('../controller/ReviewController')
 
-router.get('/reviews', getReviews)
-router.get('/reviews/bar/:barId', getReviewsByBar)
-router.post('/reviews',authorize(['Użytkownik', 'Właściciel Baru', 'Admin']) , createReview)
-router.delete('/reviews/:id', deleteReview)
+const router = express.Router()
+
+router.post('/bars/:barId/reviews', authenticate, authorize(['Użytkownik', 'Właściciel Baru']), addReview)
+
+router.get('/bars/:barId/reviews', getReviews)
+
+router.delete('/reviews/:reviewId', authenticate, authorize(['Admin', 'Użytkownik']), deleteReview)
 
 module.exports = router
