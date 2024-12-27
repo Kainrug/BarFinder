@@ -21,6 +21,10 @@ module.exports = (sequelize, DataTypes) => {
 			latitude: DataTypes.DECIMAL(9, 6),
 			longitude: DataTypes.DECIMAL(9, 6),
 			image_url: DataTypes.STRING,
+			averageRating: {
+				type: DataTypes.DECIMAL(3, 2),
+				defaultValue: 0,
+			},
 		},
 		{
 			sequelize,

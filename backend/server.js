@@ -10,13 +10,14 @@ const menuRoutes = require('./routes/menu')
 const userRoutes = require('./routes/users')
 const subscriptionRoutes = require('./routes/subscriptions')
 const BarMatchesRoutes = require('./routes/bar_matches')
-
+const { errorHandler } = require('./middleware/errorHandler')
 const app = express()
 const PORT = process.env.PORT || 5000
 
 app.use(cors())
 app.use(bodyParser.json())
 
+app.use(errorHandler)
 app.use('/api', barRoutes)
 app.use('/api', matchRoutes)
 app.use('/api', reviewRoutes)

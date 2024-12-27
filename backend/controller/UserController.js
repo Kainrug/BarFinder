@@ -62,7 +62,7 @@ const login = async (req, res) => {
 		await RefreshToken.create({
 			token: refreshToken,
 			User_ID: user.id,
-			expiredAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 dni
+			expiredAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
 		})
 
 		res.json({
