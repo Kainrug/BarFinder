@@ -1,11 +1,9 @@
 const { Menu_Review, Menu, User } = require('../models')
 
-// Pobieranie opinii dla danego menu
 const getReviewsByMenu = async (req, res) => {
 	try {
 		const { menuId } = req.params
 
-		// Pobieranie opinii związanych z menu
 		const reviews = await Menu_Review.findAll({
 			where: { Menu_ID: menuId },
 			include: [{ model: User, attributes: ['id', 'username'] }],
@@ -17,19 +15,17 @@ const getReviewsByMenu = async (req, res) => {
 	}
 }
 
-// Tworzenie nowej opinii dla menu
+
 const createReview = async (req, res) => {
 	try {
 		const { menuId } = req.params
 		const { rating, comment } = req.body
 
-		// Sprawdzanie, czy menu istnieje
 		const menu = await Menu.findByPk(menuId)
 		if (!menu) {
 			return res.status(404).json({ message: 'Menu nie istnieje.' })
 		}
 
-		// Tworzenie opinii
 		const newReview = await Menu_Review.create({
 			Menu_ID: menuId,
 			User_ID: req.user.id,
@@ -43,7 +39,7 @@ const createReview = async (req, res) => {
 	}
 }
 
-// Usuwanie opinii
+
 const deleteMenuReview = async (req, res) => {
 	try {
 		const { reviewId } = req.params

@@ -1,9 +1,14 @@
-const { where } = require('sequelize')
+const { Op } = require('sequelize')
 const { Match } = require('../models')
 
 const getMatches = async (req, res) => {
 	try {
-		const matches = await Match.findAll()
+		const { sport } = req.query
+
+		const matches = await Match.findAll({
+			where: sport ? { sport: { [Op.like]: `%${sport}%` } } : {},
+		})
+
 		res.json(matches)
 	} catch (error) {
 		res.status(500).json({ message: 'Błąd serwera', error: error.message })

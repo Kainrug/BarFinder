@@ -1,9 +1,26 @@
-const { Bar } = require('../models')
-const { Op } = require('sequelize')
+const { Bar, Review } = require('../models')
+const { Sequelize, Op } = require('sequelize')
 
 const getBars = async (req, res) => {
 	try {
-		const bars = await Bar.findAll()
+		const { minRating = 0, minReviews = 0 } = req.query
+
+		const bars = await Bar.findAll({
+			where: {
+				averageRating: {
+					[Op.gte]: minRating,
+				},
+			},
+			include: [
+				{
+					model: Review,
+					attributes: [],
+				},
+			],
+			having: Sequelize.literal(`COUNT(Reviews.id) >= ${minReviews}`),
+			group: ['Bar.id'],
+		})
+
 		res.json(bars)
 	} catch (error) {
 		res.status(500).json({ message: 'Błąd serwera', error: error.message })
