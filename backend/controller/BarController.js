@@ -1,5 +1,6 @@
 const { Bar, Review } = require('../models')
 const { Sequelize, Op } = require('sequelize')
+const axios = require('axios')
 
 const getBars = async (req, res) => {
 	try {
@@ -41,10 +42,39 @@ const getBarById = async (req, res) => {
 
 const createBar = async (req, res) => {
 	try {
-		const newBar = await Bar.create(req.body)
+		const { name, address, city, description, image_url } = req.body
+
+		const fullAddress = `${address}, ${city}`
+
+		const GOOGLE_API_KEY = process.env.GOOGLE_API_KEY
+		const url = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(
+			fullAddress
+		)}&key=${GOOGLE_API_KEY}`
+
+		const response = await axios.get(url)
+
+		if (response.data.status !== 'OK') {
+			return res.status(400).json({ message: 'Nie udało się zgeokodować adresu' })
+		}
+
+		const location = response.data.results[0].geometry.location
+		const latitude = location.lat
+		const longitude = location.lng
+
+		const newBar = await Bar.create({
+			name,
+			address,
+			city,
+			description,
+			image_url,
+			latitude,
+			longitude,
+		})
+
 		res.status(201).json(newBar)
 	} catch (error) {
-		res.status(400).json({ message: 'Błąd walidacji', error: error.message })
+		console.error('Błąd przy tworzeniu baru:', error.message)
+		res.status(500).json({ message: 'Błąd serwera', error: error.message })
 	}
 }
 
