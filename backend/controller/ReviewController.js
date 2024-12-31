@@ -70,6 +70,32 @@ const deleteReview = async (req, res) => {
 	}
 }
 
+const updateReview = async (req, res) => {
+	try {
+		const { reviewId } = req.params
+		const { comment, rating } = req.body
+
+		const review = await Review.findByPk(reviewId)
+		if (!review) {
+			return res.status(404).json({ message: 'Opinia nie istnieje.' })
+		}
+
+		if (req.user.role !== 'Admin' && req.user.id !== review.User_ID) {
+			return res.status(403).json({ message: 'Brak uprawnień do edytowania tej opinii.' })
+		}
+
+		review.comment = comment
+		review.rating = rating
+		await review.save()
+
+		await updateAverageRating(review.Bar_ID)
+
+		res.status(200).json({ message: 'Opinia została zaktualizowana.', review })
+	} catch (error) {
+		res.status(500).json({ message: 'Błąd serwera.', error: error.message })
+	}
+}
+
 const updateAverageRating = async barId => {
 	const reviews = await Review.findAll({ where: { Bar_ID: barId } })
 
@@ -84,4 +110,4 @@ const updateAverageRating = async barId => {
 	await Bar.update({ averageRating: average.toFixed(2) }, { where: { id: barId } })
 }
 
-module.exports = { addReview, getReviews, deleteReview, updateAverageRating }
+module.exports = { addReview, getReviews, deleteReview, updateAverageRating, updateReview }

@@ -16,11 +16,9 @@ const register = async (req, res) => {
 			return res.status(400).json({ message: 'Nazwa użytkownika jest już zajęta.' })
 		}
 
-		const validRoles = ['Użytkownik', 'Właściciel Baru', 'Gość']
+		const validRoles = ['Użytkownik', 'Właściciel Baru']
 		if (!validRoles.includes(role)) {
-			return res
-				.status(400)
-				.json({ message: 'Nieprawidłowa rola. Możliwe role: "Użytkownik", "Właściciel Baru", "Gość".' })
+			return res.status(400).json({ message: 'Nieprawidłowa rola. Możliwe role: "Użytkownik", "Właściciel Baru"' })
 		}
 
 		const userRole = await Role.findOne({ where: { role } })

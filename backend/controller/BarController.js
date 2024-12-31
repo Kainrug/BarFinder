@@ -4,10 +4,11 @@ const axios = require('axios')
 
 const getBars = async (req, res) => {
 	try {
-		const { minRating = 0, minReviews = 0 } = req.query
+		const { city, sortBy = 'createdAt', order = 'DESC', minRating = 0, minReviews = 0 } = req.query
 
 		const bars = await Bar.findAll({
 			where: {
+				...(city && { city }),
 				averageRating: {
 					[Op.gte]: minRating,
 				},
@@ -18,8 +19,12 @@ const getBars = async (req, res) => {
 					attributes: [],
 				},
 			],
-			having: Sequelize.literal(`COUNT(Reviews.id) >= ${minReviews}`),
+			attributes: {
+				include: [[Sequelize.fn('COUNT', Sequelize.col('Reviews.id')), 'numberOfReviews']],
+			},
 			group: ['Bar.id'],
+			having: Sequelize.literal(`COUNT(Reviews.id) >= ${minReviews}`),
+			order: [[sortBy, order]],
 		})
 
 		res.json(bars)
@@ -30,10 +35,26 @@ const getBars = async (req, res) => {
 
 const getBarById = async (req, res) => {
 	try {
-		const bar = await Bar.findByPk(req.params.id)
+		const bar = await Bar.findByPk(req.params.id, {
+			include: [
+				{
+					model: Review,
+					attributes: [],
+				},
+			],
+			attributes: {
+				include: [
+					[Sequelize.fn('AVG', Sequelize.col('Reviews.rating')), 'averageRating'],
+					[Sequelize.fn('COUNT', Sequelize.col('Reviews.id')), 'numberOfReviews'],
+				],
+			},
+			group: ['Bar.id'],
+		})
+
 		if (!bar) {
 			return res.status(404).json({ message: 'Bar nie znaleziony' })
 		}
+
 		res.json(bar)
 	} catch (error) {
 		res.status(500).json({ message: 'Błąd serwera', error: error.message })
