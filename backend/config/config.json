@@ -1,0 +1,9 @@
+{
+	"development": {
+		"username": "user",
+		"password": "password",
+		"database": "barfinder",
+		"host": "localhost",
+		"dialect": "mysql"
+	}
+}
