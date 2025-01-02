@@ -7,15 +7,12 @@ export const BarCard = ({ bar }) => (
 	<Link
 		to={`/bar/${bar.id}`}
 		className='bg-white shadow-md rounded-lg p-4 flex items-center justify-between border border-gray-200 hover:shadow-lg transition-shadow'>
-		{/* Left side: Logo + Details */}
 		<div className='flex items-center space-x-4'>
-			{/* Bar Logo */}
 			<img
 				src={bar.image_url || 'https://via.placeholder.com/100'}
 				alt={bar.name}
 				className='w-12 h-12 rounded-md object-cover border'
 			/>
-			{/* Bar Details */}
 			<div>
 				<h3 className='text-base font-semibold text-gray-800'>{bar.name}</h3>
 				<div className='flex items-center mb-4'>

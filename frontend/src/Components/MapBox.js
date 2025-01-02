@@ -3,8 +3,9 @@ import Map, { Marker, Popup } from 'react-map-gl'
 import axios from 'axios'
 import 'mapbox-gl/dist/mapbox-gl.css'
 import Supercluster from 'supercluster'
-import { Rating } from '@mui/material'
-import { LocationFilled } from './Icons'
+import { Rating, TextField, IconButton } from '@mui/material'
+import { LocationFilled, Search, Close } from './Icons'
+import { LoadScript, Autocomplete } from '@react-google-maps/api'
 
 const MapComponent = () => {
 	const [bars, setBars] = useState([])
@@ -16,6 +17,7 @@ const MapComponent = () => {
 	})
 	const [clusters, setClusters] = useState([])
 	const [searchCity, setSearchCity] = useState('')
+	const [searchedCity, setSearchedCity] = useState('')
 	const superclusterRef = useRef(
 		new Supercluster({
 			radius: 40,
@@ -25,14 +27,15 @@ const MapComponent = () => {
 
 	useEffect(() => {
 		axios
-			.get(`http://localhost:5000/api/bars?city=${searchCity}`)
+			.get(`http://localhost:5000/api/bars?city=${searchedCity}`)
 			.then(response => {
 				setBars(response.data)
+				handleSearchCity()
 			})
 			.catch(error => {
 				console.error('Błąd pobierania barów:', error)
 			})
-	}, [searchCity])
+	}, [searchedCity])
 
 	useEffect(() => {
 		if (bars.length > 0) {
@@ -64,21 +67,131 @@ const MapComponent = () => {
 		})
 	}
 
+	const handleSearchCity = async () => {
+		if (!searchCity) return
+
+		try {
+			const GOOGLE_API_KEY = process.env.REACT_APP_GOOGLE_API_KEY
+			const fullAddress = `${searchCity}`
+			const url = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(
+				fullAddress
+			)}&key=${GOOGLE_API_KEY}`
+
+			console.log('Wysyłam zapytanie do Google API:', url)
+
+			const geocodeResponse = await axios.get(url)
+
+			console.log('Odpowiedź z API:', geocodeResponse.data)
+
+			if (geocodeResponse.data.status !== 'OK') {
+				console.error('Błąd geokodowania:', geocodeResponse.data.error_message)
+				return
+			}
+
+			const location = geocodeResponse.data.results[0].geometry.location
+			const { lat, lng } = location
+
+			console.log('Nowe współrzędne:', lat, lng)
+
+			setViewport(prev => ({
+				...prev,
+				longitude: lng,
+				latitude: lat,
+				zoom: 10,
+			}))
+
+			setSearchedCity(searchCity)
+		} catch (error) {
+			console.error('Błąd geokodowania:', error)
+		}
+	}
+
+	const resetSearch = () => {
+		setSearchedCity('')
+		setSearchCity('')
+		setViewport({
+			longitude: 19.0,
+			latitude: 52.12,
+			zoom: 5,
+		})
+	}
+
+	const handlePlaceChanged = () => {
+		if (googleAutocompleteRef.current) {
+			const place = googleAutocompleteRef.current.getPlace()
+			if (place.geometry) {
+				const { lat, lng } = place.geometry.location
+				setSearchCity(place.name)
+				setViewport(prev => ({
+					...prev,
+					longitude: lng(),
+					latitude: lat(),
+					zoom: 10,
+				}))
+				setSearchedCity(place.name)
+			}
+		}
+	}
+
+	const googleAutocompleteRef = useRef(null)
+
 	return (
 		<div>
-			<input
-				type='text'
-				placeholder='Wpisz miasto'
-				value={searchCity}
-				onChange={e => setSearchCity(e.target.value)}
-				className='border rounded p-2 mb-4'
-			/>
+			<div className='search-bar-container flex items-center mb-4'>
+				<LoadScript googleMapsApiKey={process.env.REACT_APP_GOOGLE_API_KEY} libraries={['places']}>
+					<Autocomplete
+						onLoad={autocomplete => {
+							googleAutocompleteRef.current = autocomplete
+						}}
+						onPlaceChanged={handlePlaceChanged}>
+						<TextField
+							label='Wpisz miasto'
+							variant='outlined'
+							value={searchCity}
+							onChange={e => setSearchCity(e.target.value)}
+							onKeyDown={e => {
+								if (e.key === 'Enter') {
+									handleSearchCity()
+								}
+							}}
+							className='flex-1 rounded-lg py-2 px-4 shadow-md border-2 border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500' // Improved styling
+							slotProps={{
+								input: {
+									startAdornment: (
+										<IconButton>
+											<Search />
+										</IconButton>
+									),
+								},
+							}}
+						/>
+					</Autocomplete>
+				</LoadScript>
+
+				{searchCity && (
+					<IconButton
+						onClick={resetSearch}
+						color='secondary'
+						style={{ marginLeft: '8px', borderRadius: '50%', backgroundColor: 'red' }}>
+						<Close className='w-3 h-3 text-white' />
+					</IconButton>
+				)}
+			</div>
+
+			{searchedCity && (
+				<div className='inline-flex items-center text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-full text-sm px-3 py-1.5 me-2 mb-3 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700'>
+					<span className='city-name text-xs font-semibold'>{searchedCity}</span>
+					<IconButton onClick={resetSearch} color='secondary' style={{ marginLeft: '8px' }}>
+						<Close className='w-3 h-3 text-white' />
+					</IconButton>
+				</div>
+			)}
 
 			<Map
-				initialViewState={viewport}
 				style={{ width: '100%', height: '500px', borderRadius: '10px' }}
 				mapStyle='mapbox://styles/mapbox/light-v11'
 				mapboxAccessToken={process.env.REACT_APP_MAPBOX_API_KEY}
+				{...viewport}
 				onMove={evt => setViewport(evt.viewState)}>
 				{clusters.map(cluster => {
 					const [longitude, latitude] = cluster.geometry.coordinates

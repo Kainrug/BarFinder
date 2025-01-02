@@ -18,7 +18,7 @@ function App() {
 					<Route path='/register' element={<Register />} />
 					<Route path='/login' element={<Login />} />
 					<Route path='/bars' element={<Bars />} />
-					<Route path="/bar/:id" element={<BarDetails />} />
+					<Route path='/bar/:id' element={<BarDetails />} />
 				</Routes>
 			</Router>
 		</AuthProvider>

@@ -13,3 +13,29 @@ body {
 code {
 	font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
 }
+
+.pac-container {
+	@apply rounded-lg shadow-lg bg-white z-50;
+	max-height: 400px;
+	overflow-y: auto;
+	position: absolute;
+	top: 100%;
+	left: 0;
+	width: 100%;
+}
+
+.pac-item {
+	@apply px-4 py-2 text-base text-gray-800 cursor-pointer transition-colors duration-200;
+}
+
+.pac-item:hover {
+	@apply bg-gray-100;
+}
+
+.pac-item-selected {
+	@apply bg-blue-500 text-white;
+}
+
+.pac-icon {
+	display: none;
+}
