@@ -1,5 +1,5 @@
 const { Op } = require('sequelize')
-const { Match } = require('../models')
+const { Match, Bar } = require('../models')
 
 const getMatches = async (req, res) => {
 	try {
@@ -17,15 +17,25 @@ const getMatches = async (req, res) => {
 
 const getMatchById = async (req, res) => {
 	try {
-		const matches = await Match.findByPk(req.params.id)
-		if (!matches) {
-			return res.status(404).json({ message: 'Mecz nie znaleziony' })
-		}
-		res.json(matches)
+	  const match = await Match.findByPk(req.params.id, {
+		include: [
+		  {
+			model: Bar,
+			through: { attributes: [] },
+			attributes: ['id', 'name', 'address'],
+		  },
+		],
+	  });
+  
+	  if (!match) {
+		return res.status(404).json({ message: 'Mecz nie znaleziony' });
+	  }
+  
+	  res.json(match);
 	} catch (error) {
-		res.status(500).json({ message: 'Błąd serwera', error: error.message })
+	  res.status(500).json({ message: 'Błąd serwera', error: error.message });
 	}
-}
+  };
 
 const createMatches = async (req, res) => {
 	try {

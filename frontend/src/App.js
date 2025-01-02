@@ -7,6 +7,8 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import { AuthProvider } from './Context/AuthContext'
 import HeroPage from './Components/hero'
 import BarDetails from './Components/BarDetails'
+import MatchesList from './Components/MatchList'
+import MatchDetails from './Components/MatchDetails'
 
 function App() {
 	return (
@@ -19,6 +21,8 @@ function App() {
 					<Route path='/login' element={<Login />} />
 					<Route path='/bars' element={<Bars />} />
 					<Route path='/bar/:id' element={<BarDetails />} />
+					<Route path='/match' element={<MatchesList />} />
+					<Route path='/match/:id' element={<MatchDetails />} />
 				</Routes>
 			</Router>
 		</AuthProvider>

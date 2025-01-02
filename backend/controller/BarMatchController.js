@@ -12,8 +12,22 @@ const getBarMatches = async (req, res) => {
 const getMatchesByBar = async (req, res) => {
 	try {
 		const { barId } = req.params
-		const matches = await Bar_matches.findAll({ where: { Bar_ID: barId } })
-		res.json(matches)
+
+		const barWithMatches = await Bar.findByPk(barId, {
+			include: [
+				{
+					model: Match,
+					through: { attributes: [] },
+					attributes: ['id', 'sport', 'team_1', 'team_2', 'match_date'],
+				},
+			],
+		})
+
+		if (!barWithMatches) {
+			return res.status(404).json({ message: 'Bar nie znaleziony' })
+		}
+
+		res.json(barWithMatches)
 	} catch (error) {
 		res.status(500).json({ message: 'Błąd serwera', error: error.message })
 	}

@@ -7,6 +7,8 @@ import { Rating, TextField, IconButton } from '@mui/material'
 import { LocationFilled, Search, Close } from './Icons'
 import { LoadScript, Autocomplete } from '@react-google-maps/api'
 
+const LIBRARIES = ['places'] // Static libraries array
+
 const MapComponent = () => {
 	const [bars, setBars] = useState([])
 	const [popupInfo, setPopupInfo] = useState(null)
@@ -138,7 +140,7 @@ const MapComponent = () => {
 	return (
 		<div>
 			<div className='search-bar-container flex items-center mb-4'>
-				<LoadScript googleMapsApiKey={process.env.REACT_APP_GOOGLE_API_KEY} libraries={['places']}>
+				<LoadScript googleMapsApiKey={process.env.REACT_APP_GOOGLE_API_KEY} libraries={LIBRARIES}>
 					<Autocomplete
 						onLoad={autocomplete => {
 							googleAutocompleteRef.current = autocomplete
@@ -154,7 +156,7 @@ const MapComponent = () => {
 									handleSearchCity()
 								}
 							}}
-							className='flex-1 rounded-lg py-2 px-4 shadow-md border-2 border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500' // Improved styling
+							className='flex-1 rounded-lg py-2 px-4 shadow-md border-2 border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500'
 							slotProps={{
 								input: {
 									startAdornment: (

@@ -8,7 +8,7 @@ import { useAuth } from '../Context/AuthContext'
 const navigation = [
 	{ name: 'Strona Główna', href: '/', current: false },
 	{ name: 'Bary', href: '/bars', current: false },
-	{ name: 'Mecze', href: '#', current: false },
+	{ name: 'Mecze', href: '/match', current: false },
 	{ name: 'Informacje', href: '#', current: false },
 ]
 
