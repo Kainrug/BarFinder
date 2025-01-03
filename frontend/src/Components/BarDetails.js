@@ -18,6 +18,7 @@ const BarDetails = () => {
 	const [successMessage, setSuccessMessage] = useState('')
 	const [isEditingReview, setIsEditingReview] = useState(false)
 	const [reviewId, setReviewId] = useState(null)
+	const [activeTab, setActiveTab] = useState('details') // Stan dla zakładki (details/matches)
 
 	useEffect(() => {
 		const fetchBarDetails = async () => {
@@ -67,6 +68,7 @@ const BarDetails = () => {
 			alert('Nie udało się usunąć opinii.')
 		}
 	}
+
 	const submitReview = async () => {
 		try {
 			const reviewData = { rating: userRating, comment, userId }
@@ -93,122 +95,144 @@ const BarDetails = () => {
 		window.location.reload()
 	}
 
-	if (!bar) {
-		return <p>Ładowanie...</p>
-	}
-
 	const changeImage = src => {
 		document.getElementById('mainImage').src = src
 	}
 
+	const handleTabChange = tab => {
+		setActiveTab(tab)
+	}
+
+	if (!bar) {
+		return <p>Ładowanie...</p>
+	}
+
 	return (
-		<div className='bg-gray-100'>
+		<div className='min-h-screen bg-gray-100'>
 			<div className='container mx-auto px-4 py-8'>
-				<div className='flex flex-wrap -mx-4'>
-					{/* Produkt Images */}
-					<div className='w-full md:w-1/2 px-4 mb-8'>
-						<img
-							src={bar.image_url || 'https://via.placeholder.com/300'}
-							alt={bar.name}
-							className='w-full h-auto rounded-lg shadow-md mb-4'
-							id='mainImage'
-						/>
-						<div className='flex gap-4 py-4 justify-center overflow-x-auto'>
-							{bar.images?.map((image, index) => (
-								<img
-									key={index}
-									src={image}
-									alt={`Thumbnail ${index + 1}`}
-									className='w-16 sm:w-20 object-cover rounded-md cursor-pointer opacity-60 hover:opacity-100 transition duration-300'
-									onClick={() => changeImage(image)}
-								/>
-							))}
-						</div>
-					</div>
-
-					{/* Produkt Details */}
-					<div className='w-full md:w-1/2 px-4'>
-						<h2 className='text-3xl font-bold mb-2'>{bar.name}</h2>
-						<p className='text-gray-600 mb-4'>{bar.sku}</p>
-						<div className='flex items-center mb-4'>
-							<span className='text-sm text-gray-600'>
-								{bar.averageRating ? Number(bar.averageRating).toFixed(2) : 'Brak oceny'}
-							</span>
-							{/* Ocena read-only (gwiazdki tylko do odczytu) */}
-							<Rating
-								name='simple-controlled'
-								value={bar.averageRating ? Math.round(Number(bar.averageRating) * 2) / 2 : 0}
-								readOnly
-								className='text-yellow-500'
-							/>
-							<span className='text-sm text-gray-600'>({bar.numberOfReviews})</span>
-						</div>
-						<div className='mb-6'>
-							<h3 className='text-xl font-semibold mb-2'>Opis baru</h3>
-							<p className='text-gray-700 leading-relaxed'>{bar.description}</p>
-						</div>
-
-						<div className='flex items-center mb-4'>
-							<LocationFilled className='mr-2' />
-							<p className='text-gray-700'>{bar.address}</p>
-						</div>
-
-						{/* Miasto baru */}
-						<div className='flex items-center mb-4'>
-							<span className='text-gray-700 font-semibold'>Miasto: </span>
-							<p className='ml-2 text-gray-700'>{bar.city}</p>
-						</div>
-					</div>
+				<div className='flex gap-4 pb-3'>
+					<button
+						className={`px-4 py-2 rounded-full ${activeTab === 'details' ? 'bg-gray-800 text-white' : 'bg-gray-300'}`}
+						onClick={() => handleTabChange('details')}>
+						Szczegóły baru
+					</button>
+					<button
+						className={`px-4 py-2 rounded-full ${activeTab === 'matches' ? 'bg-gray-800 text-white' : 'bg-gray-300'}`}
+						onClick={() => handleTabChange('matches')}>
+						Repertuar meczów
+					</button>
 				</div>
 
-				{/* Sekcja meczów */}
-				{bar.Matches && bar.Matches.length > 0 && (
+				{/* Widok Szczegółów Baru */}
+				{activeTab === 'details' && (
+					<div className='flex flex-wrap -mx-4'>
+						{/* Produkt Images */}
+						<div className='w-full md:w-1/2 px-4 mb-8'>
+							<img
+								src={bar.image_url || 'https://via.placeholder.com/300'}
+								alt={bar.name}
+								className='w-full h-auto rounded-lg shadow-md mb-4'
+								id='mainImage'
+							/>
+							<div className='flex gap-4 py-4 justify-center overflow-x-auto'>
+								{bar.images?.map((image, index) => (
+									<img
+										key={index}
+										src={image}
+										alt={`Thumbnail ${index + 1}`}
+										className='w-16 sm:w-20 object-cover rounded-md cursor-pointer opacity-60 hover:opacity-100 transition duration-300'
+										onClick={() => changeImage(image)}
+									/>
+								))}
+							</div>
+						</div>
+
+						{/* Produkt Details */}
+						<div className='w-full md:w-1/2 px-4'>
+							<h2 className='text-3xl font-bold mb-2'>{bar.name}</h2>
+							<p className='text-gray-600 mb-4'>{bar.sku}</p>
+							<div className='flex items-center mb-4'>
+								<span className='text-sm text-gray-600'>
+									{bar.averageRating ? Number(bar.averageRating).toFixed(2) : 'Brak oceny'}
+								</span>
+								{/* Ocena read-only (gwiazdki tylko do odczytu) */}
+								<Rating
+									name='simple-controlled'
+									value={bar.averageRating ? Math.round(Number(bar.averageRating) * 2) / 2 : 0}
+									readOnly
+									className='text-yellow-500'
+								/>
+								<span className='text-sm text-gray-600'>({bar.numberOfReviews})</span>
+							</div>
+							<div className='mb-6'>
+								<h3 className='text-xl font-semibold mb-2'>Opis baru</h3>
+								<p className='text-gray-700 leading-relaxed'>{bar.description}</p>
+							</div>
+
+							<div className='flex items-center mb-4'>
+								<LocationFilled className='mr-2' />
+								<p className='text-gray-700'>{bar.address}</p>
+							</div>
+
+							{/* Miasto baru */}
+							<div className='flex items-center mb-4'>
+								<span className='text-gray-700 font-semibold'>Miasto: </span>
+								<p className='ml-2 text-gray-700'>{bar.city}</p>
+							</div>
+						</div>
+					</div>
+				)}
+
+				{/* Widok Repertuaru Meczów */}
+				{activeTab === 'matches' && bar.Matches && bar.Matches.length > 0 && (
 					<div className='mt-8'>
 						<h3 className='text-2xl font-semibold mb-4'>Repertuar meczów:</h3>
-						<ul>
+						<div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6'>
 							{bar.Matches.map(match => (
-								<li key={match.id} className='mb-4'>
-									<div className='flex justify-between'>
-										<span className='font-bold'>{match.sport}</span>
-										<span>{new Date(match.match_date).toLocaleString('pl-PL')}</span>
+								<div
+									key={match.id}
+									className='bg-white p-6 rounded-lg shadow-lg hover:shadow-2xl transition duration-300'>
+									<div className='flex justify-between items-center'>
+										<span className='font-bold text-xl'>{match.sport}</span>
+										<span className='text-sm text-gray-500'>{new Date(match.match_date).toLocaleString('pl-PL')}</span>
 									</div>
-									<div className='text-gray-700'>
+									<div className='mt-4 text-lg font-semibold text-gray-700'>
 										{match.team_1} vs {match.team_2}
 									</div>
-								</li>
+								</div>
 							))}
-						</ul>
+						</div>
 					</div>
 				)}
 
 				{/* Sekcja opinii */}
-				{reviews.map(review => (
-					<div key={review.id} className='p-4 border-b border-gray-200'>
-						<div className='flex items-center justify-between'>
-							<p className='font-semibold'>{review.User?.username || 'Anonimowy użytkownik'}</p>
-							<Rating name='read-only' value={review.rating} readOnly className='text-yellow-500' />
-						</div>
-						<p className='text-sm text-gray-500'>{new Date(review.createdAt).toLocaleDateString('pl-PL')}</p>
-						<p className='mt-2 text-gray-700'>{review.comment}</p>
-						{isLoggedIn && review.User_ID === userId && (
-							<div className='flex gap-4 mt-2'>
-								{console.log('Review User ID:', review.User_ID, 'Logged in User ID:', userId)}
-								<button onClick={() => handleEditReview(review.id)} className='text-blue-500 hover:underline'>
-									Edytuj
-								</button>
-								<button onClick={() => handleDeleteReview(review.id)} className='text-red-500 hover:underline'>
-									Usuń
-								</button>
+				{activeTab === 'details' &&
+					reviews.map(review => (
+						<div key={review.id} className='p-4 border-b border-gray-200'>
+							<div className='flex items-center justify-between'>
+								<p className='font-semibold'>{review.User?.username || 'Anonimowy użytkownik'}</p>
+								<Rating name='read-only' value={review.rating} readOnly className='text-yellow-500' />
 							</div>
-						)}
-					</div>
-				))}
+							<p className='text-sm text-gray-500'>{new Date(review.createdAt).toLocaleDateString('pl-PL')}</p>
+							<p className='mt-2 text-gray-700'>{review.comment}</p>
+							{isLoggedIn && review.User_ID === userId && (
+								<div className='flex gap-4 mt-2'>
+									<button onClick={() => handleEditReview(review.id)} className='text-blue-500 hover:underline'>
+										Edytuj
+									</button>
+									<button onClick={() => handleDeleteReview(review.id)} className='text-red-500 hover:underline'>
+										Usuń
+									</button>
+								</div>
+							)}
+						</div>
+					))}
 
-				{isLoggedIn && (
+				{activeTab === 'details' && isLoggedIn && (
 					<div className='flex justify-center mt-6'>
 						<button
 							className='inline-flex items-center text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-full text-sm px-5 py-2.5 me-2 mb-2 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700'
-							onClick={() => setIsReviewFormVisible(true)} >
+							onClick={() => setIsReviewFormVisible(true)}>
 							<Add className='mr-2' />
 							Dodaj opinię
 						</button>
@@ -219,7 +243,7 @@ const BarDetails = () => {
 				{successMessage && <div className='mt-4 bg-green-500 text-white p-4 rounded-md'>{successMessage}</div>}
 
 				{/* Formularz opinii */}
-				{isReviewFormVisible && !successMessage && (
+				{activeTab === 'details' && isReviewFormVisible && !successMessage && (
 					<div className='fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-50'>
 						<div className='bg-white p-6 rounded-lg shadow-lg w-96'>
 							<h3 className='text-xl font-bold mb-4'>Dodaj opinię</h3>
@@ -234,7 +258,7 @@ const BarDetails = () => {
 							<div className='flex justify-end gap-4'>
 								<button
 									className='bg-gray-300 text-gray-800 px-4 py-2 rounded hover:bg-gray-400'
-									onClick={() => setIsReviewFormVisible(false)} >
+									onClick={() => setIsReviewFormVisible(false)}>
 									Anuluj
 								</button>
 								<button className='bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600' onClick={submitReview}>
@@ -244,7 +268,6 @@ const BarDetails = () => {
 						</div>
 					</div>
 				)}
-
 				{/* Komunikat po dodaniu opinii */}
 				{successMessage && (
 					<div className='fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-50'>
