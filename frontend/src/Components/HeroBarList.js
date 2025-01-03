@@ -2,31 +2,28 @@ import React, { useState, useEffect } from 'react'
 import axiosInstance from '../Api/axios'
 import BarCard from './HeroBarCard'
 import { IconButton, TextField } from '@mui/material'
-import { Search, Close } from './Icons' // Upewnij się, że masz komponenty Icon
+import { Search, Close } from './Icons'
 
 const HeroBarList = () => {
-	const [bars, setBars] = useState([]) // Lista barów
-	const [searchTerm, setSearchTerm] = useState('') // Stan wyszukiwania
-	const [isSearching, setIsSearching] = useState(false) // Stan przycisku wyszukiwania
+	const [bars, setBars] = useState([])
+	const [searchTerm, setSearchTerm] = useState('')
+	const [isSearching, setIsSearching] = useState(false)
 
-	// Funkcja obsługująca kliknięcie przycisku "Search"
 	const handleSearch = async e => {
-		e.preventDefault() // Zapobiega przeładowaniu strony po kliknięciu
+		e.preventDefault()
 
-		setIsSearching(true) // Ustawia stan wyszukiwania na true
+		setIsSearching(true)
 
 		try {
-			// Wysyłamy zapytanie POST z ciałem zapytania
 			const response = await axiosInstance.post('/bars/name', { name: searchTerm })
-			setBars(response.data) // Ustawia wynik wyszukiwania
+			setBars(response.data)
 		} catch (error) {
 			console.error('Błąd podczas wyszukiwania barów:', error)
 		} finally {
-			setIsSearching(false) // Kończy wyszukiwanie
+			setIsSearching(false)
 		}
 	}
 
-	// Funkcja, która wysyła wszystkie bary, kiedy nie ma wprowadzonego wyszukiwania
 	useEffect(() => {
 		if (searchTerm === '') {
 			const fetchBars = async () => {
@@ -40,7 +37,7 @@ const HeroBarList = () => {
 
 			fetchBars()
 		}
-	}, [searchTerm]) // Wykonaj zapytanie, jeśli searchTerm jest pusty
+	}, [searchTerm])
 
 	return (
 		<div className='space-y-4 mt-10'>

@@ -60,7 +60,7 @@ const BarsList = () => {
 	return (
 		<div className='mt-16 px-4 '>
 			{/* Filters Section */}
-			<div className='filters flex justify-between items-center gap-4 mb-6'>
+			<div className='filters flex justify-between items-center gap-4 mb-6 ml-32'>
 				<div className='flex items-center gap-4'>
 					{/* Location Icon and City Filter */}
 					<div className='flex items-center gap-2'>
@@ -119,20 +119,20 @@ const BarsList = () => {
 							className='max-w-sm bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transform transition duration-300 ease-in-out'
 							style={{ width: '300px', height: '450px' }}>
 							{/* Obrazek */}
-							<a href='#'>
+							<Link to={`/bar/${bar.id}`}>
 								<img
 									className='w-full h-48 object-cover hover:scale-110 transition-all duration-300 ease-in-out'
 									src={bar.image_url || 'https://via.placeholder.com/300'}
 									alt={bar.name}
 									style={{ height: '200px', objectFit: 'cover' }}
 								/>
-							</a>
+							</Link>
 							<div className='p-4 flex flex-col justify-between h-[calc(100%-200px)]'>
-								<a href='#'>
+								<Link to={`/bar/${bar.id}`}>
 									<h5 className='mb-2 text-xl font-semibold text-gray-800 hover:text-blue-500 transition-colors duration-300'>
 										{bar.name}
 									</h5>
-								</a>
+								</Link>
 								{/* Adres i Ikona Lokalizacji */}
 								<div className='flex items-center space-x-2'>
 									<LocationFilled className='text-gray-600 w-6 h-6' />
