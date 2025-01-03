@@ -1,4 +1,4 @@
-const { Bar, Review } = require('../models')
+const { Bar, Review, Match } = require('../models')
 const { Sequelize, Op } = require('sequelize')
 const axios = require('axios')
 
@@ -41,6 +41,11 @@ const getBarById = async (req, res) => {
 					model: Review,
 					attributes: [],
 				},
+				{
+					model: Match,
+					through: { attributes: [] },
+					attributes: ['id', 'sport', 'team_1', 'team_2', 'match_date'],
+				},
 			],
 			attributes: {
 				include: [
@@ -48,7 +53,7 @@ const getBarById = async (req, res) => {
 					[Sequelize.fn('COUNT', Sequelize.col('Reviews.id')), 'numberOfReviews'],
 				],
 			},
-			group: ['Bar.id'],
+			group: ['Bar.id', 'Matches.id'],
 		})
 
 		if (!bar) {

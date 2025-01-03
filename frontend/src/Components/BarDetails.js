@@ -161,6 +161,26 @@ const BarDetails = () => {
 					</div>
 				</div>
 
+				{/* Sekcja meczów */}
+				{bar.Matches && bar.Matches.length > 0 && (
+					<div className='mt-8'>
+						<h3 className='text-2xl font-semibold mb-4'>Repertuar meczów:</h3>
+						<ul>
+							{bar.Matches.map(match => (
+								<li key={match.id} className='mb-4'>
+									<div className='flex justify-between'>
+										<span className='font-bold'>{match.sport}</span>
+										<span>{new Date(match.match_date).toLocaleString('pl-PL')}</span>
+									</div>
+									<div className='text-gray-700'>
+										{match.team_1} vs {match.team_2}
+									</div>
+								</li>
+							))}
+						</ul>
+					</div>
+				)}
+
 				{/* Sekcja opinii */}
 				{reviews.map(review => (
 					<div key={review.id} className='p-4 border-b border-gray-200'>
@@ -188,7 +208,7 @@ const BarDetails = () => {
 					<div className='flex justify-center mt-6'>
 						<button
 							className='inline-flex items-center text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-full text-sm px-5 py-2.5 me-2 mb-2 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700'
-							onClick={() => setIsReviewFormVisible(true)}>
+							onClick={() => setIsReviewFormVisible(true)} >
 							<Add className='mr-2' />
 							Dodaj opinię
 						</button>
@@ -214,7 +234,7 @@ const BarDetails = () => {
 							<div className='flex justify-end gap-4'>
 								<button
 									className='bg-gray-300 text-gray-800 px-4 py-2 rounded hover:bg-gray-400'
-									onClick={() => setIsReviewFormVisible(false)}>
+									onClick={() => setIsReviewFormVisible(false)} >
 									Anuluj
 								</button>
 								<button className='bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600' onClick={submitReview}>
