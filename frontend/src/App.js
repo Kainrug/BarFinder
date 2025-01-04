@@ -9,6 +9,7 @@ import HeroPage from './Components/hero'
 import BarDetails from './Components/BarDetails'
 import MatchesList from './Components/MatchList'
 import MatchDetails from './Components/MatchDetails'
+import BarMenu from './Components/BarMenu'
 
 function App() {
 	return (
@@ -23,6 +24,7 @@ function App() {
 					<Route path='/bar/:id' element={<BarDetails />} />
 					<Route path='/match' element={<MatchesList />} />
 					<Route path='/match/:id' element={<MatchDetails />} />
+					<Route path='/bars/:id/menu' element={<BarMenu />} />
 				</Routes>
 			</Router>
 		</AuthProvider>

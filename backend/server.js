@@ -7,6 +7,7 @@ const barRoutes = require('./routes/bars')
 const matchRoutes = require('./routes/matches')
 const reviewRoutes = require('./routes/reviews')
 const menuRoutes = require('./routes/menu')
+const menuReviewRoutes = require('./routes/menu_reviews')
 const userRoutes = require('./routes/users')
 const subscriptionRoutes = require('./routes/subscriptions')
 const BarMatchesRoutes = require('./routes/bar_matches')
@@ -25,7 +26,7 @@ app.use('/api', menuRoutes)
 app.use('/api', userRoutes)
 app.use('/api', subscriptionRoutes)
 app.use('/api', BarMatchesRoutes)
-
+app.use('/api', menuReviewRoutes)
 db.sequelize
 	.sync()
 	.then(() => {

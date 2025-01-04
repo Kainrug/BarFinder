@@ -5,6 +5,7 @@ import { Rating } from '@mui/material'
 import { LocationFilled } from './Icons'
 import { useAuth } from '../Context/AuthContext'
 import { Add } from '@mui/icons-material'
+import { useNavigate } from 'react-router-dom'
 
 const BarDetails = () => {
 	const { id } = useParams()
@@ -18,7 +19,8 @@ const BarDetails = () => {
 	const [successMessage, setSuccessMessage] = useState('')
 	const [isEditingReview, setIsEditingReview] = useState(false)
 	const [reviewId, setReviewId] = useState(null)
-	const [activeTab, setActiveTab] = useState('details') // Stan dla zakładki (details/matches)
+	const [activeTab, setActiveTab] = useState('details')
+	const navigate = useNavigate()
 
 	useEffect(() => {
 		const fetchBarDetails = async () => {
@@ -178,6 +180,13 @@ const BarDetails = () => {
 							<div className='flex items-center mb-4'>
 								<span className='text-gray-700 font-semibold'>Miasto: </span>
 								<p className='ml-2 text-gray-700'>{bar.city}</p>
+							</div>
+							<div className='flex items-center mb-4'>
+								<button
+									className='px-4 py-2 rounded-full bg-gray-800 text-white hover:bg-gray-700'
+									onClick={() => navigate(`/bars/${id}/menu`)}>
+									Zobacz Menu Baru
+								</button>
 							</div>
 						</div>
 					</div>
