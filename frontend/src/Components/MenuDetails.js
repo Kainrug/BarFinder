@@ -2,9 +2,11 @@ import React, { useState, useEffect } from 'react'
 import { useParams } from 'react-router-dom'
 import axiosInstance from '../Api/axios'
 import { Rating } from '@mui/material'
+import { useAuth } from '../Context/AuthContext'
 
 const MenuDetails = () => {
 	const { id } = useParams()
+	const { isLoggedIn, userId } = useAuth()
 	const [menuItem, setMenuItem] = useState(null)
 	const [reviews, setReviews] = useState([])
 	const [isLoading, setIsLoading] = useState(true)
@@ -24,7 +26,7 @@ const MenuDetails = () => {
 
 		const fetchReviews = async () => {
 			try {
-				const response = await axiosInstance.get(`/menu/${id}/reviews`)
+				const response = await axiosInstance.get(`/menus/${id}/reviews`)
 				setReviews(response.data)
 			} catch (error) {
 				console.error('Błąd podczas pobierania opinii:', error)
@@ -38,9 +40,14 @@ const MenuDetails = () => {
 	}, [id])
 
 	const handleSubmitReview = async () => {
+		if (!isLoggedIn) {
+			alert('Musisz być zalogowany, aby dodać opinię!')
+			return
+		}
+
 		try {
-			const reviewData = { rating: userRating, comment }
-			await axiosInstance.post(`/menu/${id}/reviews`, reviewData)
+			const reviewData = { rating: userRating, comment, userId }
+			await axiosInstance.post(`/menus/${id}/reviews`, reviewData)
 			setSuccessMessage('Opinia została zapisana!')
 			setTimeout(() => {
 				setSuccessMessage('')
@@ -49,6 +56,24 @@ const MenuDetails = () => {
 			setUserRating(0)
 		} catch (error) {
 			console.error('Błąd podczas dodawania opinii:', error)
+		}
+	}
+
+	const handleDeleteReview = async reviewId => {
+		try {
+			const response = await axiosInstance.delete(`/menu-reviews/${reviewId}`)
+			if (response.status === 200) {
+				setReviews(reviews.filter(review => review.id !== reviewId))
+				setSuccessMessage('Opinia została usunięta!')
+				setTimeout(() => {
+					setSuccessMessage('')
+				}, 5000)
+			} else {
+				throw new Error('Błąd usuwania opinii')
+			}
+		} catch (error) {
+			console.error('Błąd podczas usuwania opinii:', error)
+			setSuccessMessage('Wystąpił problem z usunięciem opinii')
 		}
 	}
 
@@ -67,9 +92,9 @@ const MenuDetails = () => {
 					<img
 						src={menuItem.image_url || 'https://via.placeholder.com/150'}
 						alt={menuItem.name}
-						className='w-full md:w-1/2 rounded-lg shadow-md mb-4 md:mb-0'
+						className='w-full md:w-1/3 rounded-lg shadow-md mb-4 md:mb-0'
 					/>
-					<div className='md:w-1/2 px-4'>
+					<div className='md:w-2/3 px-4'>
 						<p className='text-gray-700'>{menuItem.description}</p>
 						<div className='flex items-center my-4'>
 							<Rating name='read-only' value={menuItem.averageRating || 0} readOnly className='text-yellow-500' />
@@ -87,6 +112,11 @@ const MenuDetails = () => {
 								<Rating name='read-only' value={review.rating} readOnly className='text-yellow-500' />
 								<p className='text-sm text-gray-600'>{new Date(review.createdAt).toLocaleDateString('pl-PL')}</p>
 								<p className='mt-2 text-gray-700'>{review.comment}</p>
+								{isLoggedIn && review.User_ID === userId && (
+									<button onClick={() => handleDeleteReview(review.id)} className='text-red-500 mt-2'>
+										Usuń opinię
+									</button>
+								)}
 							</div>
 						))
 					) : (
@@ -94,20 +124,24 @@ const MenuDetails = () => {
 					)}
 				</div>
 
-				<div className='flex justify-center mt-6'>
-					<textarea
-						className='w-full p-2 border rounded mb-4'
-						placeholder='Napisz swoją opinię...'
-						value={comment}
-						onChange={e => setComment(e.target.value)}
-					/>
-					<div className='flex gap-4'>
-						<Rating name='user-rating' value={userRating} onChange={(e, newValue) => setUserRating(newValue)} />
-						<button onClick={handleSubmitReview} className='bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600'>
-							Dodaj opinię
-						</button>
+				{isLoggedIn && (
+					<div className='flex justify-center mt-6'>
+						<textarea
+							className='w-full p-2 border rounded mb-4'
+							placeholder='Napisz swoją opinię...'
+							value={comment}
+							onChange={e => setComment(e.target.value)}
+						/>
+						<div className='flex gap-4'>
+							<Rating name='user-rating' value={userRating} onChange={(e, newValue) => setUserRating(newValue)} />
+							<button
+								onClick={handleSubmitReview}
+								className='bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600'>
+								Dodaj opinię
+							</button>
+						</div>
 					</div>
-				</div>
+				)}
 
 				{successMessage && <div className='mt-4 bg-green-500 text-white p-4 rounded-md'>{successMessage}</div>}
 			</div>

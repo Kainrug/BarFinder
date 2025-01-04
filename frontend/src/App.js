@@ -10,6 +10,7 @@ import BarDetails from './Components/BarDetails'
 import MatchesList from './Components/MatchList'
 import MatchDetails from './Components/MatchDetails'
 import BarMenu from './Components/BarMenu'
+import MenuDetails from './Components/MenuDetails'
 
 function App() {
 	return (
@@ -25,6 +26,7 @@ function App() {
 					<Route path='/match' element={<MatchesList />} />
 					<Route path='/match/:id' element={<MatchDetails />} />
 					<Route path='/bars/:id/menu' element={<BarMenu />} />
+					<Route path='/menu/:id' element={<MenuDetails />} />
 				</Routes>
 			</Router>
 		</AuthProvider>

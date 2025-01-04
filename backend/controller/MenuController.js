@@ -1,4 +1,5 @@
-const { Menu } = require('../models')
+const { Menu, Menu_Review } = require('../models')
+const sequelize = require('sequelize')
 
 const getMenuItems = async (req, res) => {
 	try {
@@ -28,6 +29,34 @@ const createMenuItem = async (req, res) => {
 	}
 }
 
+const getMenuById = async (req, res) => {
+	try {
+		const menuItem = await Menu.findByPk(req.params.id, {
+			include: [
+				{
+					model: Menu_Review,
+					attributes: [],
+				},
+			],
+			attributes: {
+				include: [
+					[sequelize.fn('AVG', sequelize.col('Menu_Reviews.rating')), 'averageRating'],
+					[sequelize.fn('COUNT', sequelize.col('Menu_Reviews.id')), 'numberOfReviews'],
+				],
+			},
+			group: ['Menu.id'],
+		})
+
+		if (!menuItem) {
+			return res.status(404).json({ message: 'Pozycja menu nie znaleziona' })
+		}
+
+		res.json(menuItem)
+	} catch (error) {
+		res.status(500).json({ message: 'Błąd serwera', error: error.message })
+	}
+}
+
 const deleteMenuItem = async (req, res) => {
 	try {
 		const { id } = req.params
@@ -41,4 +70,4 @@ const deleteMenuItem = async (req, res) => {
 	}
 }
 
-module.exports = { getMenuItems, getMenuByBar, createMenuItem, deleteMenuItem }
+module.exports = { getMenuItems, getMenuByBar, createMenuItem, deleteMenuItem, getMenuById }
