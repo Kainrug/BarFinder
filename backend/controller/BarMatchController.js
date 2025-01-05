@@ -1,4 +1,4 @@
-const { Bar_matches } = require('../models')
+const { Bar_matches, Bar } = require('../models')
 
 const getBarMatches = async (req, res) => {
 	try {
@@ -33,9 +33,19 @@ const getMatchesByBar = async (req, res) => {
 	}
 }
 
-const createBarMatch = async (req, res) => {
+const assignMatchToBar = async (req, res) => {
 	try {
 		const { Bar_ID, Match_ID } = req.body
+		const userId = req.user.id
+
+		const bar = await Bar.findOne({ where: { id: Bar_ID } })
+		if (!bar) {
+			return res.status(400).json({ message: 'Bar o podanym ID nie istnieje.' })
+		}
+
+		if (bar.owner_id !== userId) {
+			return res.status(403).json({ message: 'Tylko właściciel baru może przypisać mecz.' })
+		}
 
 		const existing = await Bar_matches.findOne({ where: { Bar_ID, Match_ID } })
 		if (existing) {
@@ -62,4 +72,4 @@ const deleteBarMatch = async (req, res) => {
 	}
 }
 
-module.exports = { getBarMatches, createBarMatch, deleteBarMatch, getMatchesByBar }
+module.exports = { getBarMatches, assignMatchToBar, deleteBarMatch, getMatchesByBar }

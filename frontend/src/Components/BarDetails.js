@@ -21,6 +21,10 @@ const BarDetails = () => {
 	const [isEditingReview, setIsEditingReview] = useState(false)
 	const [reviewId, setReviewId] = useState(null)
 	const [activeTab, setActiveTab] = useState('details')
+	const [matches, setMatches] = useState([])
+	const [isMatchFormVisible, setIsMatchFormVisible] = useState(false)
+	const [selectedMatch, setSelectedMatch] = useState(null)
+	const [isOwner, setIsOwner] = useState(false)
 	const navigate = useNavigate()
 
 	useEffect(() => {
@@ -28,6 +32,10 @@ const BarDetails = () => {
 			try {
 				const response = await axiosInstance.get(`/bars/${id}`)
 				setBar(response.data)
+
+				if (response.data.owner_id === userId) {
+					setIsOwner(true)
+				}
 			} catch (error) {
 				console.error('Error fetching bar details:', error)
 			}
@@ -43,13 +51,31 @@ const BarDetails = () => {
 				setIsLoadingReviews(false)
 			}
 		}
+		const fetchMatches = async () => {
+			try {
+				const response = await axiosInstance.get(`/match`)
+				console.log(response.data)
+				setMatches(response.data)
+			} catch (error) {
+				console.error('Error fetching matches:', error)
+			}
+		}
 
 		fetchBarDetails()
 		fetchReviews()
+		fetchMatches()
 	}, [id])
 
 	const handleRatingChange = (event, newValue) => {
 		setUserRating(newValue)
+	}
+
+	const handleSelectMatch = e => {
+		const selectedId = Number(e.target.value)
+		console.log('Selected value:', selectedId)
+		const selected = matches.find(match => match.id === selectedId)
+		console.log('Selected match:', selected)
+		setSelectedMatch(selected)
 	}
 
 	const handleEditReview = reviewId => {
@@ -59,6 +85,25 @@ const BarDetails = () => {
 		setIsEditingReview(true)
 		setIsReviewFormVisible(true)
 		setReviewId(reviewId)
+	}
+
+	const handleAssignMatch = async () => {
+		if (!selectedMatch) {
+			alert('Proszę wybrać mecz przed przypisaniem.')
+			return
+		}
+
+		try {
+			const response = await axiosInstance.post(`/bars/${id}/assign-match`, {
+				Bar_ID: id,
+				Match_ID: selectedMatch.id,
+			})
+			alert('Mecz przypisany do baru!')
+			setIsMatchFormVisible(false)
+		} catch (error) {
+			alert('Błąd podczas przypisywania meczu!')
+			console.error(error)
+		}
 	}
 
 	const handleDeleteReview = async reviewId => {
@@ -225,6 +270,51 @@ const BarDetails = () => {
 									</div>
 								</div>
 							))}
+						</div>
+
+						{isOwner && (
+							<div className='flex justify-center mt-6'>
+								<button
+									className='inline-flex items-center text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-full text-sm px-5 py-2.5 me-2 mb-2 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700'
+									onClick={() => setIsMatchFormVisible(true)}>
+									<Add className='mr-2' />
+									Dodaj mecz do repertuaru
+								</button>
+							</div>
+						)}
+					</div>
+				)}
+				{/* Formularz przypisania meczu */}
+				{isMatchFormVisible && (
+					<div className='fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-50'>
+						<div className='bg-white p-6 rounded-lg shadow-lg w-96'>
+							<h3 className='text-xl font-bold mb-4'>Przypisz mecz do baru</h3>
+							<div>
+								<h4 className='mb-2'>Wybierz mecz:</h4>
+								<select
+									value={selectedMatch ? selectedMatch.id : ''}
+									onChange={handleSelectMatch}
+									className='w-full p-2 border rounded mb-4'>
+									<option value=''>Wybierz mecz</option>
+									{matches.map(match => (
+										<option key={match.id} value={match.id}>
+											{match.team_1} vs {match.team_2}
+										</option>
+									))}
+								</select>
+							</div>
+							<div className='flex justify-end gap-4'>
+								<button
+									className='bg-gray-300 text-gray-800 px-4 py-2 rounded hover:bg-gray-400'
+									onClick={() => setIsMatchFormVisible(false)}>
+									Anuluj
+								</button>
+								<button
+									className='bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600'
+									onClick={handleAssignMatch}>
+									Przypisz mecz
+								</button>
+							</div>
 						</div>
 					</div>
 				)}
