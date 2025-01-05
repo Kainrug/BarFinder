@@ -11,7 +11,7 @@ import MatchesList from './Components/MatchList'
 import MatchDetails from './Components/MatchDetails'
 import BarMenu from './Components/BarMenu'
 import MenuDetails from './Components/MenuDetails'
-
+import AddBar from './Components/AddBar'
 function App() {
 	return (
 		<AuthProvider>
@@ -27,6 +27,7 @@ function App() {
 					<Route path='/match/:id' element={<MatchDetails />} />
 					<Route path='/bars/:id/menu' element={<BarMenu />} />
 					<Route path='/menu/:id' element={<MenuDetails />} />
+					<Route path='/add-bar' element={<AddBar />} />
 				</Routes>
 			</Router>
 		</AuthProvider>

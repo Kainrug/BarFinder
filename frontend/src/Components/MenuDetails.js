@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { useParams } from 'react-router-dom'
+import { useParams, useNavigate } from 'react-router-dom'
 import axiosInstance from '../Api/axios'
 import { Rating } from '@mui/material'
 import { useAuth } from '../Context/AuthContext'
@@ -13,6 +13,7 @@ const MenuDetails = () => {
 	const [userRating, setUserRating] = useState(0)
 	const [comment, setComment] = useState('')
 	const [successMessage, setSuccessMessage] = useState('')
+	const navigate = useNavigate()
 
 	useEffect(() => {
 		const fetchMenuItem = async () => {
@@ -61,7 +62,7 @@ const MenuDetails = () => {
 
 	const handleDeleteReview = async reviewId => {
 		try {
-			const response = await axiosInstance.delete(`/menu-reviews/${reviewId}`)
+			const response = await axiosInstance.delete(`/menus/${id}/reviews/${reviewId}`)
 			if (response.status === 200) {
 				setReviews(reviews.filter(review => review.id !== reviewId))
 				setSuccessMessage('Opinia została usunięta!')
@@ -84,9 +85,13 @@ const MenuDetails = () => {
 	return (
 		<div className='min-h-screen bg-gray-100'>
 			<div className='container mx-auto px-4 py-8'>
+				<button
+					onClick={() => navigate(-1)}
+					className='absolute left-10 bg-gray-800 text-white px-4 py-2 rounded hover:bg-gray-600 transition'>
+					Powrót
+				</button>
 				<div className='flex justify-between items-center mb-4'>
 					<h2 className='text-3xl font-bold'>{menuItem.name}</h2>
-					<p className='text-lg font-semibold'>{menuItem.price} zł</p>
 				</div>
 				<div className='flex flex-col md:flex-row'>
 					<img
@@ -95,6 +100,7 @@ const MenuDetails = () => {
 						className='w-full md:w-1/3 rounded-lg shadow-md mb-4 md:mb-0'
 					/>
 					<div className='md:w-2/3 px-4'>
+						<p className='text-lg font-semibold'>{menuItem.price} zł</p>
 						<p className='text-gray-700'>{menuItem.description}</p>
 						<div className='flex items-center my-4'>
 							<Rating name='read-only' value={menuItem.averageRating || 0} readOnly className='text-yellow-500' />
@@ -136,7 +142,7 @@ const MenuDetails = () => {
 							<Rating name='user-rating' value={userRating} onChange={(e, newValue) => setUserRating(newValue)} />
 							<button
 								onClick={handleSubmitReview}
-								className='bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600'>
+								className='bg-gray-900 text-white px-4 py-2 rounded hover:bg-gray-600'>
 								Dodaj opinię
 							</button>
 						</div>

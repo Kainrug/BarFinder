@@ -1,9 +1,9 @@
-// src/components/Navbar.js
 import React from 'react'
 import { Disclosure, DisclosureButton, DisclosurePanel, Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react'
 import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline'
 import { useNavigate, Link, useLocation } from 'react-router-dom'
 import { useAuth } from '../Context/AuthContext'
+import { Add } from '@mui/icons-material'
 
 const navigation = [
 	{ name: 'Strona Główna', href: '/', current: false },
@@ -15,7 +15,7 @@ const navigation = [
 const Navbar = () => {
 	const navigate = useNavigate()
 	const location = useLocation()
-	const { isLoggedIn, logout } = useAuth()
+	const { isLoggedIn, logout, role } = useAuth()
 
 	const classNames = (...classes) => {
 		return classes.filter(Boolean).join(' ')
@@ -25,6 +25,7 @@ const Navbar = () => {
 		<Disclosure as='nav' className='bg-gray-900'>
 			<div className='mx-auto max-w-7xl px-2 sm:px-6 lg:px-8'>
 				<div className='relative flex h-16 items-center justify-between'>
+					{/* Menu button for mobile */}
 					<div className='absolute inset-y-0 left-0 flex items-center sm:hidden'>
 						<DisclosureButton className='group relative inline-flex items-center justify-center rounded-md p-2 text-gray-400 hover:bg-gray-700 hover:text-white focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white'>
 							<span className='absolute -inset-0.5' />
@@ -33,6 +34,8 @@ const Navbar = () => {
 							<XMarkIcon aria-hidden='true' className='hidden size-6 group-data-[open]:block' />
 						</DisclosureButton>
 					</div>
+
+					{/* Logo and Navigation Items */}
 					<div className='flex flex-1 items-center justify-center sm:items-stretch sm:justify-start'>
 						<div className='flex shrink-0 items-center'>
 							<Link to='/' className='flex items-center space-x-3 rtl:space-x-reverse'>
@@ -57,7 +60,19 @@ const Navbar = () => {
 							</div>
 						</div>
 					</div>
+
+					{/* Right Side Menu and Buttons */}
 					<div className='absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0'>
+						{/* Show Add Bar button only for bar owners */}
+						{isLoggedIn && role === 'Właściciel Baru' && (
+							<Link to='/add-bar'>
+								<button className='inline-flex items-center text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-full text-sm px-5 py-2.5 me-2 mb-2 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700 mt-2'>
+									<Add className='mr-2' />
+									Dodaj bar
+								</button>
+							</Link>
+						)}
+
 						{/* Conditional rendering for logged-in and logged-out users */}
 						{isLoggedIn ? (
 							<Menu as='div' className='relative ml-3'>
@@ -93,7 +108,7 @@ const Navbar = () => {
 							<Link to='/register'>
 								<button className='border text-sm font-medium relative border-neutral-200 dark:border-white/[0.2] text-black dark:text-white px-4 py-2 rounded-full'>
 									<span>Zarejestruj się</span>
-									<span className='absolute inset-x-0 w-1/2 mx-auto -bottom-px bg-gradient-to-r from-transparent via-blue-500 to-transparent  h-px' />
+									<span className='absolute inset-x-0 w-1/2 mx-auto -bottom-px bg-gradient-to-r from-transparent via-blue-500 to-transparent h-px' />
 								</button>
 							</Link>
 						)}
@@ -101,6 +116,7 @@ const Navbar = () => {
 				</div>
 			</div>
 
+			{/* Mobile Menu */}
 			<DisclosurePanel className='sm:hidden'>
 				<div className='space-y-1 px-2 pb-3 pt-2'>
 					{navigation.map(item => (

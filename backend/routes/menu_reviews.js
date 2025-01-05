@@ -15,6 +15,11 @@ router.post(
 	createReview
 )
 
-router.delete('/menu-reviews/:reviewId', authenticate, authorize(['Admin', 'Użytkownik']), deleteMenuReview)
+router.delete(
+	'/menus/:menuId/reviews/:reviewId',
+	authenticate,
+	authorize(['Admin', 'Użytkownik', 'Właściciel Baru']),
+	deleteMenuReview
+)
 
 module.exports = router

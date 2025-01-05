@@ -28,7 +28,7 @@ app.use('/api', subscriptionRoutes)
 app.use('/api', BarMatchesRoutes)
 app.use('/api', menuReviewRoutes)
 db.sequelize
-	.sync()
+	.sync({})
 	.then(() => {
 		console.log('Baza danych zsynchronizowana.')
 		app.listen(PORT, () => console.log(`Serwer działa na http://localhost:${PORT}`))

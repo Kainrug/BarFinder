@@ -5,7 +5,7 @@ module.exports = (sequelize, DataTypes) => {
 	class Bar extends Model {
 		static associate(models) {
 			Bar.belongsToMany(models.Match, { through: models.Bar_matches, foreignKey: 'Bar_ID' })
-
+			Bar.belongsTo(models.User, { foreignKey: 'owner_id' })
 			Bar.hasMany(models.Review, { foreignKey: 'Bar_ID' })
 
 			Bar.hasMany(models.Menu, { foreignKey: 'Bar_ID' })
@@ -24,6 +24,10 @@ module.exports = (sequelize, DataTypes) => {
 			averageRating: {
 				type: DataTypes.DECIMAL(3, 2),
 				defaultValue: 0,
+			},
+			owner_id: {
+				type: DataTypes.INTEGER,
+				allowNull: false,
 			},
 		},
 		{

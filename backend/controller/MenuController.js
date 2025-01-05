@@ -1,4 +1,4 @@
-const { Menu, Menu_Review } = require('../models')
+const { Menu, Menu_Review, Bar } = require('../models')
 const sequelize = require('sequelize')
 
 const getMenuItems = async (req, res) => {
@@ -22,10 +22,26 @@ const getMenuByBar = async (req, res) => {
 
 const createMenuItem = async (req, res) => {
 	try {
-		const newItem = await Menu.create(req.body)
+		const { barId } = req.params
+		const userId = req.user.id
+
+		const bar = await Bar.findByPk(barId)
+		if (!bar) {
+			return res.status(404).json({ message: 'Bar nie znaleziony' })
+		}
+
+		if (bar.owner_id !== userId) {
+			return res.status(403).json({ message: 'Tylko właściciel baru może dodać pozycje do menu' })
+		}
+
+		const newItem = await Menu.create({
+			...req.body,
+			Bar_ID: barId,
+		})
+
 		res.status(201).json(newItem)
 	} catch (error) {
-		res.status(400).json({ message: 'Błąd walidacji', error: error.message })
+		res.status(500).json({ message: 'Błąd serwera', error: error.message })
 	}
 }
 
@@ -59,11 +75,23 @@ const getMenuById = async (req, res) => {
 
 const deleteMenuItem = async (req, res) => {
 	try {
-		const { id } = req.params
-		const deleted = await Menu.destroy({ where: { id } })
+		const { id, barId } = req.params
+		const userId = req.user.id
+
+		const bar = await Bar.findByPk(barId)
+		if (!bar) {
+			return res.status(404).json({ message: 'Bar nie znaleziony' })
+		}
+
+		if (bar.owner_id !== userId) {
+			return res.status(403).json({ message: 'Tylko właściciel baru może usunąć pozycję z menu' })
+		}
+
+		const deleted = await Menu.destroy({ where: { id, Bar_ID: barId } })
 		if (!deleted) {
 			return res.status(404).json({ message: 'Pozycja w menu nie znaleziona' })
 		}
+
 		res.json({ message: 'Pozycja usunięta z menu' })
 	} catch (error) {
 		res.status(500).json({ message: 'Błąd serwera', error: error.message })

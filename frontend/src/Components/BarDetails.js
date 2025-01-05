@@ -6,6 +6,7 @@ import { LocationFilled } from './Icons'
 import { useAuth } from '../Context/AuthContext'
 import { Add } from '@mui/icons-material'
 import { useNavigate } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 
 const BarDetails = () => {
 	const { id } = useParams()
@@ -123,6 +124,20 @@ const BarDetails = () => {
 						onClick={() => handleTabChange('matches')}>
 						Repertuar meczów
 					</button>
+				</div>
+
+				<div className='mb-6'>
+					<nav className='text-sm'>
+						<Link to='/' className='text-blue-500 hover:underline'>
+							Strona Główna
+						</Link>
+						<span className='mx-2 text-gray-500'>&gt;</span>
+						<Link to='/bars' className='text-blue-500 hover:underline'>
+							Bary
+						</Link>
+						<span className='mx-2 text-gray-500'>&gt;</span>
+						<span className='text-gray-700'>{bar.name}</span>
+					</nav>
 				</div>
 
 				{/* Widok Szczegółów Baru */}

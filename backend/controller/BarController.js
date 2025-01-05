@@ -69,6 +69,7 @@ const getBarById = async (req, res) => {
 const createBar = async (req, res) => {
 	try {
 		const { name, address, city, description, image_url } = req.body
+		const userId = req.user.id
 
 		const fullAddress = `${address}, ${city}`
 
@@ -95,6 +96,7 @@ const createBar = async (req, res) => {
 			image_url,
 			latitude,
 			longitude,
+			owner_id: userId,
 		})
 
 		res.status(201).json(newBar)
