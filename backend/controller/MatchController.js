@@ -17,30 +17,36 @@ const getMatches = async (req, res) => {
 
 const getMatchById = async (req, res) => {
 	try {
-	  const match = await Match.findByPk(req.params.id, {
-		include: [
-		  {
-			model: Bar,
-			through: { attributes: [] },
-			attributes: ['id', 'name', 'address'],
-		  },
-		],
-	  });
-  
-	  if (!match) {
-		return res.status(404).json({ message: 'Mecz nie znaleziony' });
-	  }
-  
-	  res.json(match);
+		const match = await Match.findByPk(req.params.id, {
+			include: [
+				{
+					model: Bar,
+					through: { attributes: [] },
+					attributes: ['id', 'name', 'address'],
+				},
+			],
+		})
+
+		if (!match) {
+			return res.status(404).json({ message: 'Mecz nie znaleziony' })
+		}
+
+		res.json(match)
 	} catch (error) {
-	  res.status(500).json({ message: 'Błąd serwera', error: error.message });
+		res.status(500).json({ message: 'Błąd serwera', error: error.message })
 	}
-  };
+}
 
 const createMatches = async (req, res) => {
 	try {
-		const newMatch = await Match.create(req.body)
-		res.status(201).json(newMatch)
+		const { sport, team_1, team_2, match_date } = req.body
+
+		if (!sport || !team_1 || !team_2 || !match_date) {
+			return res.status(400).json({ message: 'Wszystkie pola są wymagane.' })
+		}
+
+		const newMatch = await Match.create({ sport, team_1, team_2, match_date })
+		res.status(201).json({ message: 'Mecz został dodany.', match: newMatch })
 	} catch (error) {
 		res.status(400).json({ message: 'Błąd walidacji', error: error.message })
 	}

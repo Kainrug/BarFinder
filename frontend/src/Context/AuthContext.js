@@ -36,7 +36,12 @@ export const AuthProvider = ({ children }) => {
 			setUserId(response.data.user.id)
 			setIsLoggedIn(true)
 		} catch (error) {
-			console.error('Błąd logowania:', error)
+			if (error.response && error.response.data) {
+				throw error
+			} else {
+				console.error('Błąd logowania:', error)
+				throw new Error('Nieoczekiwany błąd. Spróbuj ponownie później.')
+			}
 		}
 	}
 

@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { useAuth } from '../Context/AuthContext'
+import { useNavigate } from 'react-router-dom'
 
 function Login() {
 	const { login, message, role } = useAuth()
@@ -7,6 +8,9 @@ function Login() {
 		email: '',
 		password: '',
 	})
+	const [errors, setErrors] = useState({})
+	const [generalError, setGeneralError] = useState('')
+	const navigate = useNavigate()
 
 	const handleChange = e => {
 		setFormData({ ...formData, [e.target.name]: e.target.value })
@@ -14,7 +18,23 @@ function Login() {
 
 	const handleSubmit = async e => {
 		e.preventDefault()
-		await login(formData)
+		setErrors({})
+		setGeneralError('')
+		try {
+			await login(formData)
+			navigate('/')
+		} catch (error) {
+			if (error.response?.data?.errors) {
+				const newErrors = {}
+				error.response.data.errors.forEach(err => {
+					newErrors[err.path] = err.msg
+				})
+				setErrors(newErrors)
+				setGeneralError('Popraw błędy w formularzu.')
+			} else {
+				setGeneralError(error.response?.data?.message || 'Wystąpił błąd')
+			}
+		}
 	}
 
 	return (
@@ -36,6 +56,7 @@ function Login() {
 					</div>
 				)}
 				{role && <div className='mb-4 text-center text-sm text-gray-600'>Jesteś zalogowany jako: {role}</div>}
+				{generalError && <div className='mb-4 text-center text-sm text-red-600'>{generalError}</div>}
 				<form onSubmit={handleSubmit} className='space-y-6'>
 					<div>
 						<label htmlFor='email' className='block text-sm font-medium text-gray-900'>
@@ -50,6 +71,7 @@ function Login() {
 								onChange={handleChange}
 								className='block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm'
 							/>
+							{errors.email && <div className='mt-2 text-sm text-red-600'>{errors.email}</div>}
 						</div>
 					</div>
 
@@ -66,6 +88,7 @@ function Login() {
 								onChange={handleChange}
 								className='block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm'
 							/>
+							{errors.password && <div className='mt-2 text-sm text-red-600'>{errors.password}</div>}
 						</div>
 					</div>
 

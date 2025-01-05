@@ -1,12 +1,12 @@
 const express = require('express')
 const { register, login, refreshToken, logout } = require('../controller/UserController')
 const { authenticate, authorize } = require('../middleware/auth')
-const { validateUserRegistration } = require('../middleware/validateUser')
+const { validateUserRegistration, validateUserLogin } = require('../middleware/validateUser')
 const router = express.Router()
 
 router.post('/register', validateUserRegistration, register)
 
-router.post('/login', login)
+router.post('/login', validateUserLogin, login)
 
 router.post('/refresh-token', refreshToken)
 

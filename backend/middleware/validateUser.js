@@ -29,4 +29,24 @@ const validateUserRegistration = [
 	},
 ]
 
-module.exports = { validateUserRegistration }
+const validateUserLogin = [
+	body('email')
+		.notEmpty()
+		.withMessage('Adres e-mail jest wymagany.')
+		.isEmail()
+		.withMessage('Podaj prawidłowy adres e-mail.'),
+	body('password')
+		.notEmpty()
+		.withMessage('Hasło jest wymagane.')
+		.isLength({ min: 8 })
+		.withMessage('Hasło musi mieć co najmniej 8 znaków.'),
+	(req, res, next) => {
+		const errors = validationResult(req)
+		if (!errors.isEmpty()) {
+			return res.status(400).json({ message: 'Błąd walidacji', errors: errors.array() })
+		}
+		next()
+	},
+]
+
+module.exports = { validateUserRegistration, validateUserLogin }

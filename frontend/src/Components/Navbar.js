@@ -17,6 +17,11 @@ const Navbar = () => {
 	const location = useLocation()
 	const { isLoggedIn, logout, role } = useAuth()
 
+	const handleLogout = () => {
+		logout()
+		navigate('/')
+	}
+
 	const classNames = (...classes) => {
 		return classes.filter(Boolean).join(' ')
 	}
@@ -60,10 +65,7 @@ const Navbar = () => {
 							</div>
 						</div>
 					</div>
-
-					{/* Right Side Menu and Buttons */}
 					<div className='absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0'>
-						{/* Show Add Bar button only for bar owners */}
 						{isLoggedIn && role === 'Właściciel Baru' && (
 							<Link to='/add-bar'>
 								<button className='inline-flex items-center text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-full text-sm px-5 py-2.5 me-2 mb-2 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700 mt-2'>
@@ -73,7 +75,6 @@ const Navbar = () => {
 							</Link>
 						)}
 
-						{/* Conditional rendering for logged-in and logged-out users */}
 						{isLoggedIn ? (
 							<Menu as='div' className='relative ml-3'>
 								<div>
@@ -98,7 +99,7 @@ const Navbar = () => {
 										</Link>
 									</MenuItem>
 									<MenuItem>
-										<button onClick={logout} className='block w-full px-4 py-2 text-left text-sm text-gray-700'>
+										<button onClick={handleLogout} className='block w-full px-4 py-2 text-left text-sm text-gray-700'>
 											Wyloguj się
 										</button>
 									</MenuItem>
