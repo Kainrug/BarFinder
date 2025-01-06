@@ -13,8 +13,33 @@ const getMenuItems = async (req, res) => {
 const getMenuByBar = async (req, res) => {
 	try {
 		const { barId } = req.params
+
+		const page = parseInt(req.query.page) || 1
+		const limit = parseInt(req.query.limit) || 10
+
 		const items = await Menu.findAll({ where: { Bar_ID: barId } })
-		res.json(items)
+
+		const startIndex = (page - 1) * limit
+		const endIndex = page * limit
+
+		const results = {}
+
+		if (endIndex < items.length) {
+			results.next = {
+				page: page + 1,
+				limit: limit,
+			}
+		}
+
+		if (startIndex > 0) {
+			results.previous = {
+				page: page - 1,
+				limit: limit,
+			}
+		}
+
+		results.results = items.slice(startIndex, endIndex)
+		res.json(results)
 	} catch (error) {
 		res.status(500).json({ message: 'Błąd serwera', error: error.message })
 	}
