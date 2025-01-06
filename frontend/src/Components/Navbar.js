@@ -5,6 +5,7 @@ import { useNavigate, Link, useLocation } from 'react-router-dom'
 import { useAuth } from '../Context/AuthContext'
 import { Add } from '@mui/icons-material'
 import { useTranslation } from 'react-i18next'
+import i18n from 'i18next'
 const navigation = [
 	{ name: 'home', href: '/', current: false },
 	{ name: 'bars', href: '/bars', current: false },
@@ -28,6 +29,40 @@ const Navbar = () => {
 
 	return (
 		<Disclosure as='nav' className='bg-gray-900'>
+			<div className='absolute right-10 top-3'>
+				<Menu as='div' className='relative inline-block text-left'>
+					<MenuButton className='inline-flex justify-center items-center w-10 h-10 rounded-full bg-white text-white shadow-md hover:bg-gray-600'>
+						<img src='https://www.svgrepo.com/show/348179/language.svg' alt='Language' className='w-5 h-5' />
+					</MenuButton>
+					<MenuItems className='absolute right-0 z-10 mt-2 w-32 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none '>
+						<MenuItem>
+							<button
+								onClick={() => i18n.changeLanguage('en')}
+								className='flex items-center space-x-2  px-4 py-2 text-sm text-gray-700'>
+								<img
+									src='https://upload.wikimedia.org/wikipedia/commons/8/83/Flag_of_the_United_Kingdom_%283-5%29.svg'
+									alt='English Flag'
+									className='w-5 h-5'
+								/>
+								<span>English</span>
+							</button>
+						</MenuItem>
+						<MenuItem>
+							<button
+								onClick={() => i18n.changeLanguage('pl')}
+								className='flex items-center space-x-2  px-4 py-2 text-sm text-gray-700'>
+								<img
+									src='https://upload.wikimedia.org/wikipedia/commons/1/12/Flag_of_Poland.svg'
+									alt='Polish Flag'
+									className='w-5 h-5'
+								/>
+								<span>Polski</span>
+							</button>
+						</MenuItem>
+					</MenuItems>
+				</Menu>
+			</div>
+
 			<div className='mx-auto max-w-7xl px-2 sm:px-6 lg:px-8'>
 				<div className='relative flex h-16 items-center justify-between'>
 					{/* Menu button for mobile */}
