@@ -6,11 +6,13 @@ import Supercluster from 'supercluster'
 import { Rating, TextField, IconButton } from '@mui/material'
 import { LocationFilled, Search, Close } from './Icons'
 import { LoadScript, Autocomplete } from '@react-google-maps/api'
+import { useTranslation } from 'react-i18next'
 
-const LIBRARIES = ['places'] // Static libraries array
+const LIBRARIES = ['places']
 
 const MapComponent = () => {
 	const [bars, setBars] = useState([])
+	const { t } = useTranslation()
 	const [popupInfo, setPopupInfo] = useState(null)
 	const [viewport, setViewport] = useState({
 		longitude: 19.0,
@@ -35,7 +37,7 @@ const MapComponent = () => {
 				handleSearchCity()
 			})
 			.catch(error => {
-				console.error('Błąd pobierania barów:', error)
+				console.error(t('fetchBarsError'), error)
 			})
 	}, [searchedCity])
 
@@ -147,7 +149,7 @@ const MapComponent = () => {
 						}}
 						onPlaceChanged={handlePlaceChanged}>
 						<TextField
-							label='Wpisz miasto'
+							label={t('enterCity')}
 							variant='outlined'
 							value={searchCity}
 							onChange={e => setSearchCity(e.target.value)}
@@ -157,6 +159,7 @@ const MapComponent = () => {
 								}
 							}}
 							className='flex-1 rounded-lg py-2 px-4 shadow-md border-2 border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500'
+							placeholder={t('enterLocation')}
 							slotProps={{
 								input: {
 									startAdornment: (
@@ -276,12 +279,12 @@ const MapComponent = () => {
 								<a
 									href={`/bar/${popupInfo.bars[0].id}`}
 									className='text-blue-500 hover:underline text-xs mt-2 inline-block'>
-									View Details
+									{t('viewDetails')}
 								</a>
 							</div>
 						) : (
 							<div className='bg-white shadow-md rounded-md p-2 text-sm border border-gray-200 w-65'>
-								<h3 className='font-semibold text-gray-800 mb-1'>Bary w tej lokalizacji:</h3>
+								<h3 className='font-semibold text-gray-800 mb-1'>{t('barsInThisLocation')}</h3>
 								<ul className='list-disc pl-4'>
 									{popupInfo.bars.map(bar => (
 										<li key={bar.id} className='mb-1'>
