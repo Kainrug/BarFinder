@@ -5,11 +5,35 @@ const getMatches = async (req, res) => {
 	try {
 		const { sport } = req.query
 
+		const page = parseInt(req.query.page)
+		const limit = parseInt(req.query.limit)
+
 		const matches = await Match.findAll({
 			where: sport ? { sport: { [Op.like]: `%${sport}%` } } : {},
 		})
 
-		res.json(matches)
+		const startIndex = (page - 1) * limit
+		const endIndex = page * limit
+
+		const results = {}
+
+		if (endIndex < matches.length) {
+			results.next = {
+				page: page + 1,
+				limit: limit,
+			}
+		}
+
+		if (startIndex > 0) {
+			results.previous = {
+				page: page - 1,
+				limit: limit,
+			}
+		}
+
+		results.results = matches.slice(startIndex, endIndex)
+
+		res.json(results)
 	} catch (error) {
 		res.status(500).json({ message: 'Błąd serwera', error: error.message })
 	}

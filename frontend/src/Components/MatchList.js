@@ -24,18 +24,23 @@ const MatchesList = () => {
 	const [message, setMessage] = useState('')
 	const { t } = useTranslation()
 
+	const [page, setPage] = useState(1)
+	const [limit, setLimit] = useState(5)
+
 	useEffect(() => {
 		const fetchMatches = async () => {
 			try {
-				const response = await axiosInstance.get('/match')
-				setMatches(response.data)
+				const response = await axiosInstance.get('/match', {
+					params: { page, limit },
+				})
+				setMatches(response.data.results)
 			} catch (error) {
 				console.error('Błąd podczas pobierania meczów:', error)
 			}
 		}
 
 		fetchMatches()
-	}, [])
+	}, [page, limit])
 
 	const handleInputChange = e => {
 		const { name, value } = e.target
@@ -90,6 +95,22 @@ const MatchesList = () => {
 		}
 	}
 
+	const nextPage = () => {
+		setPage(page + 1)
+	}
+
+	const previousPage = () => {
+		if (page > 1) setPage(page - 1)
+	}
+
+	const handlePageChange = e => {
+		setPage(Number(e.target.value))
+	}
+
+	const handleLimitChange = e => {
+		setLimit(Number(e.target.value))
+	}
+
 	return (
 		<div className='bg-gray-100 min-h-screen p-8'>
 			<h1 className='text-3xl font-bold text-center mb-8'>{t('matchSchedule')}</h1>
@@ -99,6 +120,7 @@ const MatchesList = () => {
 
 			{showForm && (
 				<form onSubmit={handleFormSubmit} className='mb-8 bg-white p-6 rounded shadow'>
+					{/* Form fields for adding a new match */}
 					<div>
 						<label className='block mb-2 font-bold'>Sport:</label>
 						<input
@@ -150,6 +172,7 @@ const MatchesList = () => {
 				</form>
 			)}
 
+			{/* Renderowanie meczów */}
 			<div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6'>
 				{matches.map(match =>
 					match && match.team_1 && match.team_2 ? (
@@ -178,6 +201,22 @@ const MatchesList = () => {
 						</div>
 					) : null
 				)}
+			</div>
+
+			{/* Paginacja */}
+			<div className='flex justify-center mt-8'>
+				<button onClick={previousPage} className='px-4 py-2 bg-gray-800 text-white rounded mr-4'>
+					{t('previous')}
+				</button>
+				<input
+					type='number'
+					value={page}
+					onChange={handlePageChange}
+					className='px-4 py-2 border rounded w-16 text-center'
+				/>
+				<button onClick={nextPage} className='px-4 py-2 bg-gray-800 text-white rounded ml-4'>
+					{t('next')}
+				</button>
 			</div>
 
 			{/* Ogólny komunikat o błędach */}

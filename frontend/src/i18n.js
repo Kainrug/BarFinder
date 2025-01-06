@@ -103,6 +103,8 @@ i18n.use(initReactI18next).init({
 				selectRole: 'Select Role',
 				barOwnerRole: 'Bar Owner',
 				doNotHaveAcc: 'You do not have account',
+				previous: 'Previous',
+				next: 'Next',
 			},
 		},
 		pl: {
@@ -205,6 +207,8 @@ i18n.use(initReactI18next).init({
 				selectRole: 'Wybierz rolę',
 				barOwnerRole: 'Właściciel Baru',
 				doNotHaveAcc: 'Nie masz konta',
+				previous: 'Poprzednia',
+				next: 'Następna',
 			},
 		},
 	},
