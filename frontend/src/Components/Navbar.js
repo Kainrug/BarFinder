@@ -9,7 +9,6 @@ const navigation = [
 	{ name: 'Strona Główna', href: '/', current: false },
 	{ name: 'Bary', href: '/bars', current: false },
 	{ name: 'Mecze', href: '/match', current: false },
-	{ name: 'Informacje', href: '#', current: false },
 ]
 
 const Navbar = () => {
@@ -88,16 +87,13 @@ const Navbar = () => {
 									</MenuButton>
 								</div>
 								<MenuItems className='absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none'>
-									<MenuItem>
-										<Link to='/profile' className='block px-4 py-2 text-sm text-gray-700'>
-											Twój profil
-										</Link>
-									</MenuItem>
-									<MenuItem>
-										<Link to='/subscriptions' className='block px-4 py-2 text-sm text-gray-700'>
-											Subskrypcje
-										</Link>
-									</MenuItem>
+									{isLoggedIn && role === 'Właściciel Baru' && (
+										<MenuItem>
+											<Link to='/subscriptions' className='block px-4 py-2 text-sm text-gray-700'>
+												Subskrypcje
+											</Link>
+										</MenuItem>
+									)}
 									<MenuItem>
 										<button onClick={handleLogout} className='block w-full px-4 py-2 text-left text-sm text-gray-700'>
 											Wyloguj się

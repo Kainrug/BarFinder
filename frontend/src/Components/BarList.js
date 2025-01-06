@@ -5,6 +5,8 @@ import { LocationFilled, Sort, Filter } from './Icons'
 import axiosInstance from '../Api/axios'
 import { Grid2 } from '@mui/material'
 import { Link } from 'react-router-dom'
+import '../i18n'
+import { useTranslation } from 'react-i18next'
 
 const BarsList = () => {
 	const [bars, setBars] = useState([])
@@ -15,7 +17,8 @@ const BarsList = () => {
 	})
 	const [sortMenuOpen, setSortMenuOpen] = useState(false)
 	const [localFilters, setLocalFilters] = useState(filters)
-	const [selectedSortOption, setSelectedSortOption] = useState('Najnowsze')
+	const [selectedSortOption, setSelectedSortOption] = useState('')
+	const { t } = useTranslation()
 
 	const toggleSortMenu = () => {
 		setSortMenuOpen(prevState => !prevState)
@@ -32,7 +35,8 @@ const BarsList = () => {
 	}
 
 	const handleCityChange = city => {
-		const cityFilter = city === 'Brak filtrowania' ? '' : city
+		const noFilteringText = t('noFiltering')
+		const cityFilter = city === noFilteringText ? '' : city
 		setLocalFilters(prevFilters => ({
 			...prevFilters,
 			city: cityFilter,
@@ -58,46 +62,46 @@ const BarsList = () => {
 	}, [filters])
 
 	return (
-		<div className='mt-16 px-4 '>
+		<div className='mt-16 px-4'>
 			{/* Filters Section */}
 			<div className='filters flex justify-between items-center gap-4 mb-6 ml-32'>
 				<div className='flex items-center gap-4'>
 					{/* Location Icon and City Filter */}
 					<div className='flex items-center gap-2'>
 						<LocationFilled className='w-5 h-5 text-gray-600' />
-						<p className='city-filter-text'>Filtruj po mieście:</p>
+						<p className='city-filter-text'>{t('city')}:</p>
 					</div>
-					<CityDropdown onCityChange={handleCityChange} />
+					<CityDropdown onCityChange={handleCityChange} t={t} />
 
 					{/* Sort Filter */}
 					<div className='relative'>
 						<button
 							className='flex items-center gap-1 px-4 py-2 rounded-md bg-gray-100 text-gray-700 hover:bg-gray-200'
 							onClick={toggleSortMenu}>
-							{selectedSortOption}
+							{selectedSortOption || t('sortBy')}
 							<Sort className='w-5 h-5 text-gray-500' />
 						</button>
 						{sortMenuOpen && (
 							<div className='absolute right-0 mt-2 w-40 bg-white border border-gray-200 rounded-md shadow-lg z-10'>
 								<button
-									onClick={() => handleSortSelection('createdAt', 'DESC', 'Najnowsze')}
+									onClick={() => handleSortSelection('createdAt', 'DESC', t('latest'))}
 									className='block w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100'>
-									Najnowsze
+									{t('latest')}
 								</button>
 								<button
-									onClick={() => handleSortSelection('averageRating', 'DESC', 'Najlepiej oceniane')}
+									onClick={() => handleSortSelection('averageRating', 'DESC', t('bestRated'))}
 									className='block w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100'>
-									Najlepiej oceniane
+									{t('bestRated')}
 								</button>
 								<button
-									onClick={() => handleSortSelection('createdAt', 'ASC', 'Najstarsze')}
+									onClick={() => handleSortSelection('createdAt', 'ASC', t('oldest'))}
 									className='block w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100'>
-									Najstarsze
+									{t('oldest')}
 								</button>
 								<button
-									onClick={() => handleSortSelection('averageRating', 'ASC', 'Najgorzej oceniane')}
+									onClick={() => handleSortSelection('averageRating', 'ASC', t('worstRated'))}
 									className='block w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100'>
-									Najgorzej oceniane
+									{t('worstRated')}
 								</button>
 							</div>
 						)}
@@ -105,7 +109,7 @@ const BarsList = () => {
 					<button
 						className='inline-flex items-center gap-2 rounded-md bg-gray-700 py-1.5 px-3 text-sm/6 font-semibold text-white shadow-inner shadow-white/10 focus:outline-none data-[hover]:bg-gray-600 data-[open]:bg-gray-700 data-[focus]:outline-1 data-[focus]:outline-white'
 						onClick={handleApplyFilters}>
-						Filtruj
+						{t('filter')}
 						<Filter className='w-5 h-5' />
 					</button>
 				</div>
@@ -158,7 +162,7 @@ const BarsList = () => {
 									<Link
 										to={`/bar/${bar.id}`}
 										className='inline-flex items-center text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-full text-sm px-5 py-2.5 me-2 mb-2 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700'>
-										Szczegóły
+										{t('details')}
 										<svg
 											className='w-4 h-4 ml-2'
 											xmlns='http://www.w3.org/2000/svg'

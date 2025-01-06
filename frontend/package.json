@@ -18,11 +18,13 @@
     "cls": "^0.1.5",
     "clsx": "^2.1.1",
     "cra-template": "1.2.0",
+    "i18next": "^24.2.0",
     "jwt-decode": "^4.0.0",
     "lucide-react": "^0.469.0",
     "mapbox-gl": "^3.9.1",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
+    "react-i18next": "^15.4.0",
     "react-map-gl": "^7.1.8",
     "react-router-dom": "^7.1.1",
     "react-scripts": "5.0.1",
@@ -30,6 +32,7 @@
     "supercluster": "^8.0.1",
     "tailwind-merge": "^2.6.0",
     "tailwindcss-animate": "^1.0.7",
+    "typescript": "^5.7.2",
     "web-vitals": "^4.2.4"
   },
   "scripts": {

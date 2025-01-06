@@ -2,27 +2,32 @@ import { Listbox, ListboxButton, ListboxOption, ListboxOptions } from '@headless
 import { CheckIcon, ChevronDownIcon } from '@heroicons/react/20/solid'
 import { useState } from 'react'
 import clsx from 'clsx'
-
-const cities = [
-	{ id: 0, name: 'Brak filtrowania' },
-	{ id: 1, name: 'Warszawa' },
-	{ id: 2, name: 'Kraków' },
-	{ id: 3, name: 'Łódź' },
-	{ id: 4, name: 'Wrocław' },
-	{ id: 5, name: 'Poznań' },
-	{ id: 6, name: 'Gdańsk' },
-	{ id: 7, name: 'Szczecin' },
-	{ id: 8, name: 'Bydgoszcz' },
-	{ id: 9, name: 'Lublin' },
-	{ id: 10, name: 'Katowice' },
-]
+import { useTranslation } from 'react-i18next'
 
 const CityDropdown = ({ onCityChange }) => {
+	// Umieszczamy t() w odpowiednim miejscu
+	const { t } = useTranslation()
+
+	// Teraz możemy używać t('noFiltering')
+	const cities = [
+		{ id: 0, name: t('noFiltering') },
+		{ id: 1, name: 'Warszawa' },
+		{ id: 2, name: 'Kraków' },
+		{ id: 3, name: 'Łódź' },
+		{ id: 4, name: 'Wrocław' },
+		{ id: 5, name: 'Poznań' },
+		{ id: 6, name: 'Gdańsk' },
+		{ id: 7, name: 'Szczecin' },
+		{ id: 8, name: 'Bydgoszcz' },
+		{ id: 9, name: 'Lublin' },
+		{ id: 10, name: 'Katowice' },
+	]
+
 	const [selectedCity, setSelectedCity] = useState(cities[0])
 
 	const handleChange = city => {
 		setSelectedCity(city)
-		onCityChange?.(city.name)
+		onCityChange?.(city.name === t('noFiltering') ? '' : city.name)
 	}
 
 	return (
