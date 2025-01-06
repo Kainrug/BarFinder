@@ -3,8 +3,10 @@ import { useParams, useNavigate } from 'react-router-dom'
 import axiosInstance from '../Api/axios'
 import { Add } from '@mui/icons-material'
 import { useAuth } from '../Context/AuthContext'
+import { useTranslation } from 'react-i18next'
 
 const BarMenu = () => {
+	const { t } = useTranslation()
 	const { id } = useParams()
 	const navigate = useNavigate()
 	const { userId } = useAuth()
@@ -46,7 +48,7 @@ const BarMenu = () => {
 	}
 
 	if (isLoading) {
-		return <p className='text-center text-gray-700'>Ładowanie menu...</p>
+		return <p className='text-center text-gray-700'>{t('loading')}</p>
 	}
 
 	return (
@@ -60,17 +62,17 @@ const BarMenu = () => {
 				<button
 					onClick={() => navigate(-1)}
 					className='absolute top-4 left-4 bg-gray-800 text-white px-4 py-2 rounded hover:bg-gray-600 transition'>
-					Powrót
+					{t('back')}
 				</button>
 				{isOwner && (
 					<button
 						onClick={() => setShowModal(true)}
 						className='absolute top-4 right-4 bg-gray-800 text-white px-4 py-2 rounded hover:bg-gray-600 transition flex items-center'>
 						<Add className='mr-2' />
-						Dodaj pozycję
+						{t('addItem')}
 					</button>
 				)}
-				<h1 className='text-4xl font-extrabold text-center mb-8'>Menu Baru</h1>
+				<h1 className='text-4xl font-extrabold text-center mb-8'>{t('menuTitle')}</h1>
 				{menuItems.length > 0 ? (
 					<div className='grid gap-8 sm:grid-cols-2 lg:grid-cols-3'>
 						{menuItems.map(item => (
@@ -87,7 +89,7 @@ const BarMenu = () => {
 									<button
 										onClick={() => navigate(`/menu/${item.id}`)}
 										className='mt-4 inline-flex items-center text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-full text-sm px-5 py-2.5 me-2 mb-2'>
-										Szczegóły
+										{t('viewDetails')}
 									</button>
 									<button
 										onClick={async () => {
@@ -99,22 +101,22 @@ const BarMenu = () => {
 											}
 										}}
 										className='mt-2 text-red-600 hover:text-red-800'>
-										Usuń
+										{t('delete')}
 									</button>
 								</div>
 							</div>
 						))}
 					</div>
 				) : (
-					<p className='text-center text-gray-500'>Brak dostępnych pozycji w menu.</p>
+					<p className='text-center text-gray-500'>{t('noItemsInMenu')}</p>
 				)}
 
 				{showModal && (
 					<div className='fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center'>
 						<div className='bg-white p-8 rounded-lg shadow-lg w-full max-w-md'>
-							<h2 className='text-2xl font-bold mb-4'>Dodaj nową pozycję</h2>
+							<h2 className='text-2xl font-bold mb-4'>{t('addNewItem')}</h2>
 							<label className='block mb-2'>
-								<span className='text-gray-700'>Nazwa</span>
+								<span className='text-gray-700'>{t('name')}</span>
 								<input
 									type='text'
 									className='mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring focus:ring-opacity-50 focus:ring-blue-300'
@@ -123,14 +125,14 @@ const BarMenu = () => {
 								/>
 							</label>
 							<label className='block mb-2'>
-								<span className='text-gray-700'>Opis</span>
+								<span className='text-gray-700'>{t('description')}</span>
 								<textarea
 									className='mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring focus:ring-opacity-50 focus:ring-blue-300'
 									value={newItem.description}
 									onChange={e => setNewItem({ ...newItem, description: e.target.value })}></textarea>
 							</label>
 							<label className='block mb-2'>
-								<span className='text-gray-700'>Cena</span>
+								<span className='text-gray-700'>{t('price')}</span>
 								<input
 									type='number'
 									step='0.01'
@@ -140,7 +142,7 @@ const BarMenu = () => {
 								/>
 							</label>
 							<label className='block mb-4'>
-								<span className='text-gray-700'>URL Obrazu</span>
+								<span className='text-gray-700'>{t('imageUrl')}</span>
 								<input
 									type='text'
 									className='mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring focus:ring-opacity-50 focus:ring-blue-300'
@@ -152,12 +154,12 @@ const BarMenu = () => {
 								<button
 									onClick={() => setShowModal(false)}
 									className='px-4 py-2 bg-gray-300 rounded hover:bg-gray-400 transition'>
-									Anuluj
+									{t('cancel')}
 								</button>
 								<button
 									onClick={handleAddItem}
 									className='px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition'>
-									Dodaj
+									{t('add')}
 								</button>
 							</div>
 						</div>

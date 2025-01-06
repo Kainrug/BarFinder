@@ -7,9 +7,11 @@ import { useAuth } from '../Context/AuthContext'
 import { Add } from '@mui/icons-material'
 import { useNavigate } from 'react-router-dom'
 import { Link } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 
 const BarDetails = () => {
 	const { id } = useParams()
+	const { t } = useTranslation()
 	const { isLoggedIn, userId } = useAuth()
 	const [bar, setBar] = useState(null)
 	const [reviews, setReviews] = useState([])
@@ -72,9 +74,7 @@ const BarDetails = () => {
 
 	const handleSelectMatch = e => {
 		const selectedId = Number(e.target.value)
-		console.log('Selected value:', selectedId)
 		const selected = matches.find(match => match.id === selectedId)
-		console.log('Selected match:', selected)
 		setSelectedMatch(selected)
 	}
 
@@ -89,7 +89,7 @@ const BarDetails = () => {
 
 	const handleAssignMatch = async () => {
 		if (!selectedMatch) {
-			alert('Proszę wybrać mecz przed przypisaniem.')
+			alert(t('pleaseSelectMatch'))
 			return
 		}
 
@@ -98,10 +98,10 @@ const BarDetails = () => {
 				Bar_ID: id,
 				Match_ID: selectedMatch.id,
 			})
-			alert('Mecz przypisany do baru!')
+			alert(t('matchAssigned'))
 			setIsMatchFormVisible(false)
 		} catch (error) {
-			alert('Błąd podczas przypisywania meczu!')
+			alert(t('matchAssignError'))
 			console.error(error)
 		}
 	}
@@ -110,10 +110,10 @@ const BarDetails = () => {
 		try {
 			await axiosInstance.delete(`/reviews/${reviewId}`)
 			setReviews(reviews.filter(review => review.id !== reviewId))
-			alert('Opinia została usunięta!')
+			alert(t('reviewDeleted'))
 		} catch (error) {
 			console.error('Błąd podczas usuwania opinii:', error)
-			alert('Nie udało się usunąć opinii.')
+			alert(t('reviewDeleteError'))
 		}
 	}
 
@@ -125,7 +125,7 @@ const BarDetails = () => {
 			} else {
 				await axiosInstance.post(`/bars/${id}/reviews`, reviewData)
 			}
-			setSuccessMessage('Opinia została zapisana!')
+			setSuccessMessage(t('reviewSubmitted'))
 			setTimeout(() => {
 				setSuccessMessage('')
 			}, 5000)
@@ -135,7 +135,7 @@ const BarDetails = () => {
 			setIsEditingReview(false)
 		} catch (error) {
 			console.error('Błąd podczas dodawania opinii:', error)
-			alert('Nie udało się dodać opinii.')
+			alert(t('reviewAddError'))
 		}
 	}
 
@@ -152,7 +152,7 @@ const BarDetails = () => {
 	}
 
 	if (!bar) {
-		return <p>Ładowanie...</p>
+		return <p>{t('loading')}...</p>
 	}
 
 	return (
@@ -162,23 +162,23 @@ const BarDetails = () => {
 					<button
 						className={`px-4 py-2 rounded-full ${activeTab === 'details' ? 'bg-gray-800 text-white' : 'bg-gray-300'}`}
 						onClick={() => handleTabChange('details')}>
-						Szczegóły baru
+						{t('detailsBar')}
 					</button>
 					<button
 						className={`px-4 py-2 rounded-full ${activeTab === 'matches' ? 'bg-gray-800 text-white' : 'bg-gray-300'}`}
 						onClick={() => handleTabChange('matches')}>
-						Repertuar meczów
+						{t('matchTransmision')}
 					</button>
 				</div>
 
 				<div className='mb-6'>
 					<nav className='text-sm'>
 						<Link to='/' className='text-blue-500 hover:underline'>
-							Strona Główna
+							{t('home')}
 						</Link>
 						<span className='mx-2 text-gray-500'>&gt;</span>
 						<Link to='/bars' className='text-blue-500 hover:underline'>
-							Bary
+							{t('bars')}
 						</Link>
 						<span className='mx-2 text-gray-500'>&gt;</span>
 						<span className='text-gray-700'>{bar.name}</span>
@@ -227,7 +227,7 @@ const BarDetails = () => {
 								<span className='text-sm text-gray-600'>({bar.numberOfReviews})</span>
 							</div>
 							<div className='mb-6'>
-								<h3 className='text-xl font-semibold mb-2'>Opis baru</h3>
+								<h3 className='text-xl font-semibold mb-2'>{t('barDescription')}</h3>
 								<p className='text-gray-700 leading-relaxed'>{bar.description}</p>
 							</div>
 
@@ -238,14 +238,14 @@ const BarDetails = () => {
 
 							{/* Miasto baru */}
 							<div className='flex items-center mb-4'>
-								<span className='text-gray-700 font-semibold'>Miasto: </span>
+								<span className='text-gray-700 font-semibold'>{t('city')}: </span>
 								<p className='ml-2 text-gray-700'>{bar.city}</p>
 							</div>
 							<div className='flex items-center mb-4'>
 								<button
 									className='px-4 py-2 rounded-full bg-gray-800 text-white hover:bg-gray-700'
 									onClick={() => navigate(`/bars/${id}/menu`)}>
-									Zobacz Menu Baru
+									{t('viewMenu')}
 								</button>
 							</div>
 						</div>
@@ -255,7 +255,7 @@ const BarDetails = () => {
 				{/* Widok Repertuaru Meczów */}
 				{activeTab === 'matches' && bar.Matches && bar.Matches.length > 0 && (
 					<div className='mt-8'>
-						<h3 className='text-2xl font-semibold mb-4'>Repertuar meczów:</h3>
+						<h3 className='text-2xl font-semibold mb-4'>{t('matchSchedule')}</h3>
 						<div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6'>
 							{bar.Matches.map(match => (
 								<div
@@ -278,7 +278,7 @@ const BarDetails = () => {
 									className='inline-flex items-center text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-full text-sm px-5 py-2.5 me-2 mb-2 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700'
 									onClick={() => setIsMatchFormVisible(true)}>
 									<Add className='mr-2' />
-									Dodaj mecz do repertuaru
+									{t('addMatch')}
 								</button>
 							</div>
 						)}
@@ -288,14 +288,14 @@ const BarDetails = () => {
 				{isMatchFormVisible && (
 					<div className='fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-50'>
 						<div className='bg-white p-6 rounded-lg shadow-lg w-96'>
-							<h3 className='text-xl font-bold mb-4'>Przypisz mecz do baru</h3>
+							<h3 className='text-xl font-bold mb-4'>{t('matchAssign')}</h3>
 							<div>
-								<h4 className='mb-2'>Wybierz mecz:</h4>
+								<h4 className='mb-2'>{t('chooseMatch')}:</h4>
 								<select
 									value={selectedMatch ? selectedMatch.id : ''}
 									onChange={handleSelectMatch}
 									className='w-full p-2 border rounded mb-4'>
-									<option value=''>Wybierz mecz</option>
+									<option value=''>{t('chooseMatch')}</option>
 									{matches.map(match => (
 										<option key={match.id} value={match.id}>
 											{match.team_1} vs {match.team_2}
@@ -307,12 +307,12 @@ const BarDetails = () => {
 								<button
 									className='bg-gray-300 text-gray-800 px-4 py-2 rounded hover:bg-gray-400'
 									onClick={() => setIsMatchFormVisible(false)}>
-									Anuluj
+									{t('cancel')}
 								</button>
 								<button
 									className='bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600'
 									onClick={handleAssignMatch}>
-									Przypisz mecz
+									{t('matchAssign')}
 								</button>
 							</div>
 						</div>
@@ -332,10 +332,10 @@ const BarDetails = () => {
 							{isLoggedIn && review.User_ID === userId && (
 								<div className='flex gap-4 mt-2'>
 									<button onClick={() => handleEditReview(review.id)} className='text-blue-500 hover:underline'>
-										Edytuj
+										{t('edit')}
 									</button>
 									<button onClick={() => handleDeleteReview(review.id)} className='text-red-500 hover:underline'>
-										Usuń
+										{t('delete')}
 									</button>
 								</div>
 							)}
@@ -348,7 +348,7 @@ const BarDetails = () => {
 							className='inline-flex items-center text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-full text-sm px-5 py-2.5 me-2 mb-2 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700'
 							onClick={() => setIsReviewFormVisible(true)}>
 							<Add className='mr-2' />
-							Dodaj opinię
+							{t('addReview')}
 						</button>
 					</div>
 				)}
@@ -360,12 +360,14 @@ const BarDetails = () => {
 				{activeTab === 'details' && isReviewFormVisible && !successMessage && (
 					<div className='fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-50'>
 						<div className='bg-white p-6 rounded-lg shadow-lg w-96'>
-							<h3 className='text-xl font-bold mb-4'>Dodaj opinię</h3>
-							<p className='mb-2'>Twoja ocena: {userRating} gwiazdek</p>
+							<h3 className='text-xl font-bold mb-4'>{t('addReview')}</h3>
+							<p className='mb-2'>
+								{t('yourReview')}: {userRating} {t('stars')}
+							</p>
 							<Rating name='user-rating' value={userRating} onChange={handleRatingChange} className='mb-4' />
 							<textarea
 								className='w-full p-2 border rounded mb-4'
-								placeholder='Napisz swoją opinię...'
+								placeholder={t('addYourReview')}
 								value={comment}
 								onChange={e => setComment(e.target.value)}
 							/>
@@ -373,10 +375,10 @@ const BarDetails = () => {
 								<button
 									className='bg-gray-300 text-gray-800 px-4 py-2 rounded hover:bg-gray-400'
 									onClick={() => setIsReviewFormVisible(false)}>
-									Anuluj
+									{t('cancel')}
 								</button>
 								<button className='bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600' onClick={submitReview}>
-									Dodaj opinię
+									{t('addReview')}
 								</button>
 							</div>
 						</div>
