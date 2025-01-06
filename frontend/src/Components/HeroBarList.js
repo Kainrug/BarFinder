@@ -3,11 +3,13 @@ import axiosInstance from '../Api/axios'
 import BarCard from './HeroBarCard'
 import { IconButton, TextField } from '@mui/material'
 import { Search, Close } from './Icons'
+import { useTranslation } from 'react-i18next'
 
 const HeroBarList = () => {
 	const [bars, setBars] = useState([])
 	const [searchTerm, setSearchTerm] = useState('')
 	const [isSearching, setIsSearching] = useState(false)
+	const { t } = useTranslation()
 
 	const handleSearch = async e => {
 		e.preventDefault()
@@ -18,7 +20,7 @@ const HeroBarList = () => {
 			const response = await axiosInstance.post('/bars/name', { name: searchTerm })
 			setBars(response.data)
 		} catch (error) {
-			console.error('Błąd podczas wyszukiwania barów:', error)
+			console.error(t('searchError'), error)
 		} finally {
 			setIsSearching(false)
 		}
@@ -31,7 +33,7 @@ const HeroBarList = () => {
 					const response = await axiosInstance.get('/bars')
 					setBars(response.data)
 				} catch (error) {
-					console.error('Błąd podczas pobierania barów:', error)
+					console.error(t('fetchBarsError'), error)
 				}
 			}
 
@@ -45,7 +47,7 @@ const HeroBarList = () => {
 			<div className='flex justify-center mb-6'>
 				<form onSubmit={handleSearch} className='relative max-w-4xl w-full'>
 					<TextField
-						label='Szukaj barów po nazwie...'
+						label={t('searchBarsLabel')}
 						variant='outlined'
 						value={searchTerm}
 						onChange={e => setSearchTerm(e.target.value)}
@@ -68,14 +70,14 @@ const HeroBarList = () => {
 						type='submit'
 						disabled={isSearching}
 						className='absolute right-2 bottom-2 bg-gray-800 text-white px-4 py-2 rounded-lg hover:bg-gray-700 focus:outline-none'>
-						{isSearching ? 'Szukanie...' : 'Szukaj'}
+						{isSearching ? t('searching') : t('search')}
 					</button>
 				</form>
 			</div>
 
 			{/* Lista barów */}
 			{bars.length === 0 ? (
-				<p className='text-center text-gray-500'>Brak wyników do wyświetlenia.</p>
+				<p className='text-center text-gray-500'>{t('noResults')}</p>
 			) : (
 				bars.map(bar => <BarCard key={bar.id} bar={bar} />)
 			)}

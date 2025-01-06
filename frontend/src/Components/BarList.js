@@ -35,13 +35,12 @@ const BarsList = () => {
 	}
 
 	const handleCityChange = city => {
-		const noFilteringText = t('noFiltering')
-		const cityFilter = city === noFilteringText ? '' : city
+		const cityFilter = city === 'Brak filtrowania' ? '' : city
 		setLocalFilters(prevFilters => ({
 			...prevFilters,
 			city: cityFilter,
 		}))
-	}
+	} 
 
 	const fetchBars = async () => {
 		try {
