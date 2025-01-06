@@ -12,6 +12,8 @@ import MatchDetails from './Components/MatchDetails'
 import BarMenu from './Components/BarMenu'
 import MenuDetails from './Components/MenuDetails'
 import AddBar from './Components/AddBar'
+import SubscriptionsPage from './Components/SubscriptionsPage'
+
 function App() {
 	return (
 		<AuthProvider>
@@ -28,6 +30,7 @@ function App() {
 					<Route path='/bars/:id/menu' element={<BarMenu />} />
 					<Route path='/menu/:id' element={<MenuDetails />} />
 					<Route path='/add-bar' element={<AddBar />} />
+					<Route path='/subscriptions' element={<SubscriptionsPage />} />
 				</Routes>
 			</Router>
 		</AuthProvider>

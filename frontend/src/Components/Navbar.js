@@ -94,8 +94,8 @@ const Navbar = () => {
 										</Link>
 									</MenuItem>
 									<MenuItem>
-										<Link to='/settings' className='block px-4 py-2 text-sm text-gray-700'>
-											Ustawienia
+										<Link to='/subscriptions' className='block px-4 py-2 text-sm text-gray-700'>
+											Subskrypcje
 										</Link>
 									</MenuItem>
 									<MenuItem>
