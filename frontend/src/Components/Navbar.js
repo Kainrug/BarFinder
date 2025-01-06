@@ -4,14 +4,15 @@ import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline'
 import { useNavigate, Link, useLocation } from 'react-router-dom'
 import { useAuth } from '../Context/AuthContext'
 import { Add } from '@mui/icons-material'
-
+import { useTranslation } from 'react-i18next'
 const navigation = [
-	{ name: 'Strona Główna', href: '/', current: false },
-	{ name: 'Bary', href: '/bars', current: false },
-	{ name: 'Mecze', href: '/match', current: false },
+	{ name: 'home', href: '/', current: false },
+	{ name: 'bars', href: '/bars', current: false },
+	{ name: 'matches', href: '/match', current: false },
 ]
 
 const Navbar = () => {
+	const { t } = useTranslation()
 	const navigate = useNavigate()
 	const location = useLocation()
 	const { isLoggedIn, logout, role } = useAuth()
@@ -58,7 +59,7 @@ const Navbar = () => {
 												: 'text-gray-300 hover:bg-gray-700 hover:text-white',
 											'rounded-md px-3 py-2 text-sm font-medium'
 										)}>
-										{item.name}
+										{t(item.name)}
 									</Link>
 								))}
 							</div>
@@ -69,7 +70,7 @@ const Navbar = () => {
 							<Link to='/add-bar'>
 								<button className='inline-flex items-center text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-full text-sm px-5 py-2.5 me-2 mb-2 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700 mt-2'>
 									<Add className='mr-2' />
-									Dodaj bar
+									{t('addBar')}
 								</button>
 							</Link>
 						)}
@@ -90,13 +91,13 @@ const Navbar = () => {
 									{isLoggedIn && role === 'Właściciel Baru' && (
 										<MenuItem>
 											<Link to='/subscriptions' className='block px-4 py-2 text-sm text-gray-700'>
-												Subskrypcje
+												{t('subs')}
 											</Link>
 										</MenuItem>
 									)}
 									<MenuItem>
 										<button onClick={handleLogout} className='block w-full px-4 py-2 text-left text-sm text-gray-700'>
-											Wyloguj się
+											{t('signOut')}
 										</button>
 									</MenuItem>
 								</MenuItems>
@@ -104,7 +105,7 @@ const Navbar = () => {
 						) : (
 							<Link to='/register'>
 								<button className='border text-sm font-medium relative border-neutral-200 dark:border-white/[0.2] text-black dark:text-white px-4 py-2 rounded-full'>
-									<span>Zarejestruj się</span>
+									<span>{t('signUp')}</span>
 									<span className='absolute inset-x-0 w-1/2 mx-auto -bottom-px bg-gradient-to-r from-transparent via-blue-500 to-transparent h-px' />
 								</button>
 							</Link>

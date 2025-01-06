@@ -1,8 +1,10 @@
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import axiosInstance from '../Api/axios'
+import { useTranslation } from 'react-i18next'
 
 function Register() {
+	const { t } = useTranslation()
 	const [formData, setFormData] = useState({
 		username: '',
 		email: '',
@@ -40,7 +42,7 @@ function Register() {
 					src='https://tailwindui.com/plus/img/logos/mark.svg?color=indigo&shade=600'
 					className='mx-auto h-10 w-auto'
 				/>
-				<h2 className='mt-10 text-center text-2xl font-bold tracking-tight text-gray-900'>Zarejestruj się</h2>
+				<h2 className='mt-10 text-center text-2xl font-bold tracking-tight text-gray-900'>{t('signUp')}</h2>
 			</div>
 
 			<div className='mt-10 sm:mx-auto sm:w-full sm:max-w-sm'>
@@ -48,7 +50,7 @@ function Register() {
 				<form onSubmit={handleSubmit} className='space-y-6'>
 					<div>
 						<label htmlFor='username' className='block text-sm font-medium text-gray-900'>
-							Nazwa użytkownika
+							{t('usernameLabel')}
 						</label>
 						<div className='mt-2'>
 							<input
@@ -80,7 +82,7 @@ function Register() {
 
 					<div>
 						<label htmlFor='password' className='block text-sm font-medium text-gray-900'>
-							Hasło
+							{t('passwordLabel')}
 						</label>
 						<div className='mt-2'>
 							<input
@@ -96,7 +98,7 @@ function Register() {
 
 					<div>
 						<label htmlFor='role' className='block text-sm font-medium text-gray-900'>
-							Wybierz rolę
+							{t('selectRole')}
 						</label>
 						<div className='mt-2'>
 							<select
@@ -104,8 +106,8 @@ function Register() {
 								name='role'
 								onChange={handleChange}
 								className='block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm'>
-								<option value='Użytkownik'>Użytkownik</option>
-								<option value='Właściciel Baru'>Właściciel Baru</option>
+								<option value='Użytkownik'>{t('user')}</option>
+								<option value='Właściciel Baru'>{t('barOwnerRole')}</option>
 							</select>
 						</div>
 					</div>
@@ -114,15 +116,15 @@ function Register() {
 						<button
 							type='submit'
 							className='flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600'>
-							Zarejestruj się
+							{t('signUp')}
 						</button>
 					</div>
 				</form>
 
 				<p className='mt-10 text-center text-sm text-gray-500'>
-					Masz już konto?{' '}
+					{t('alreadyHaveAccount')}{' '}
 					<a href='/login' className='font-semibold text-indigo-600 hover:text-indigo-500'>
-						Zaloguj się
+						{t('login')}
 					</a>
 				</p>
 			</div>

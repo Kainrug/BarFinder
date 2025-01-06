@@ -3,6 +3,7 @@ import axiosInstance from '../Api/axios'
 import { Link } from 'react-router-dom'
 import { Add } from '@mui/icons-material'
 import { useAuth } from '../Context/AuthContext'
+import { useTranslation } from 'react-i18next'
 
 const MatchesList = () => {
 	const [matches, setMatches] = useState([])
@@ -21,6 +22,7 @@ const MatchesList = () => {
 		match_date: '',
 	})
 	const [message, setMessage] = useState('')
+	const { t } = useTranslation()
 
 	useEffect(() => {
 		const fetchMatches = async () => {
@@ -44,9 +46,9 @@ const MatchesList = () => {
 		try {
 			await axiosInstance.delete(`/match/${matchId}`)
 			setMatches(matches.filter(match => match.id !== matchId))
-			setMessage('Mecz został usunięty!')
+			setMessage(t('matchDeleted'))
 		} catch (error) {
-			setMessage('Wystąpił błąd podczas usuwania meczu.')
+			setMessage(t('matchDeleteError'))
 			console.error(error)
 		}
 	}
@@ -56,15 +58,15 @@ const MatchesList = () => {
 
 		const newErrors = {}
 
-		if (!formData.sport) newErrors.sport = 'Dyscyplina sportowa jest wymagana.'
-		if (!formData.team_1) newErrors.team_1 = 'Pierwsza drużyna jest wymagana.'
-		if (!formData.team_2) newErrors.team_2 = 'Druga drużyna jest wymagana.'
-		if (!formData.match_date) newErrors.match_date = 'Data meczu jest wymagana.'
-		else if (new Date(formData.match_date) <= new Date()) newErrors.match_date = 'Data meczu musi być w przyszłości.'
+		if (!formData.sport) newErrors.sport = t('sportRequired')
+		if (!formData.team_1) newErrors.team_1 = t('team1Required')
+		if (!formData.team_2) newErrors.team_2 = t('team2Required')
+		if (!formData.match_date) newErrors.match_date = t('matchDateRequired')
+		else if (new Date(formData.match_date) <= new Date()) newErrors.match_date = t('matchDateFuture')
 
 		if (Object.keys(newErrors).length > 0) {
 			setErrors(newErrors)
-			setMessage('Popraw błędy w formularzu.')
+			setMessage(t('formError'))
 			return
 		}
 
@@ -73,7 +75,7 @@ const MatchesList = () => {
 			setMatches([...matches, response.data.match])
 			setFormData({ sport: '', team_1: '', team_2: '', match_date: '' })
 			setShowForm(false)
-			setMessage('Mecz został dodany!')
+			setMessage(t('matchAdded'))
 		} catch (error) {
 			if (error.response?.data?.errors) {
 				const newErrors = {}
@@ -81,18 +83,18 @@ const MatchesList = () => {
 					newErrors[err.path] = err.msg
 				})
 				setErrors(newErrors)
-				setMessage('Popraw błędy w formularzu.')
+				setMessage(t('formError'))
 			} else {
-				setMessage(error.response?.data?.message || 'Wystąpił błąd')
+				setMessage(error.response?.data?.message || t('genericError'))
 			}
 		}
 	}
 
 	return (
 		<div className='bg-gray-100 min-h-screen p-8'>
-			<h1 className='text-3xl font-bold text-center mb-8'>Lista Meczów</h1>
+			<h1 className='text-3xl font-bold text-center mb-8'>{t('matchSchedule')}</h1>
 			<button onClick={() => setShowForm(!showForm)} className='bg-gray-800 text-white px-4 py-2 mb-4 rounded'>
-				{showForm ? 'Zamknij formularz' : 'Dodaj Mecz'}
+				{showForm ? t('closeForm') : t('addMatch')}
 			</button>
 
 			{showForm && (
@@ -109,7 +111,7 @@ const MatchesList = () => {
 						{errors.sport && <div className='mb-4 text-center text-sm text-red-600'>{errors.sport}</div>}
 					</div>
 					<div>
-						<label className='block mb-2 font-bold'>Drużyna 1:</label>
+						<label className='block mb-2 font-bold'>{t('team1')}:</label>
 						<input
 							type='text'
 							name='team_1'
@@ -120,7 +122,7 @@ const MatchesList = () => {
 						{errors.team_1 && <div className='mb-4 text-center text-sm text-red-600'>{errors.team_1}</div>}
 					</div>
 					<div>
-						<label className='block mb-2 font-bold'>Drużyna 2:</label>
+						<label className='block mb-2 font-bold'>{t('team2')}:</label>
 						<input
 							type='text'
 							name='team_2'
@@ -131,7 +133,7 @@ const MatchesList = () => {
 						{errors.team_2 && <div className='mb-4 text-center text-sm text-red-600'>{errors.team_2}</div>}
 					</div>
 					<div>
-						<label className='block mb-2 font-bold'>Data meczu:</label>
+						<label className='block mb-2 font-bold'>{t('matchDate')}:</label>
 						<input
 							type='datetime-local'
 							name='match_date'
@@ -143,7 +145,7 @@ const MatchesList = () => {
 					</div>
 					<button type='submit' className='mt-4 bg-green-500 text-white px-4 py-2 rounded'>
 						<Add className='mr-2' />
-						Dodaj Mecz
+						{t('addMatch')}
 					</button>
 				</form>
 			)}
@@ -158,17 +160,19 @@ const MatchesList = () => {
 								{match.team_1} vs {match.team_2}
 							</h2>
 							<h3 className='text-md font-semibold text-gray-800 mb-4'>Sport: {match.sport}</h3>
-							<p className='text-gray-600 mb-4'>Data: {new Date(match.match_date).toLocaleString()}</p>
+							<p className='text-gray-600 mb-4'>
+								{t('matchDate')}: {new Date(match.match_date).toLocaleString()}
+							</p>
 							<Link
 								to={`/match/${match.id}`}
 								className='block text-center bg-gray-800 text-white font-medium py-2 px-4 rounded-lg hover:bg-gray-600 transition-colors duration-200'>
-								Zobacz szczegóły
+								{t('viewDetails')}
 							</Link>
 							{role === 'Admin' && (
 								<button
 									onClick={() => handleDeleteMatch(match.id)}
 									className='mt-4 bg-red-500 text-white px-4 py-2 rounded'>
-									Usuń mecz
+									{t('delete')}
 								</button>
 							)}
 						</div>

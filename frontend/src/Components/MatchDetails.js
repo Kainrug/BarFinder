@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { useParams } from 'react-router-dom'
 import axiosInstance from '../Api/axios'
 import { useAuth } from '../Context/AuthContext'
+import { useTranslation } from 'react-i18next'
 
 const MatchDetails = () => {
 	const { id } = useParams()
@@ -10,6 +11,7 @@ const MatchDetails = () => {
 	const [loading, setLoading] = useState(true)
 	const [usersToCome, setUsersToCome] = useState({})
 	const [message, setMessage] = useState({ text: '', type: '' })
+	const { t } = useTranslation()
 
 	const handleInputChange = (barId, value) => {
 		setUsersToCome(prevState => ({ ...prevState, [barId]: value }))
@@ -23,9 +25,9 @@ const MatchDetails = () => {
 				Match_ID: id,
 				users_to_come: numberOfUsers,
 			})
-			setMessage({ text: `Zapisano na mecz ${numberOfUsers} osób w tym barze!`, type: 'success' })
+			setMessage({ text: t('subscriptionSuccess', { numberOfUsers }), type: 'success' })
 		} catch (error) {
-			const errorMessage = error.response?.data?.message || 'Nie udało się zapisać. Spróbuj ponownie.'
+			const errorMessage = error.response?.data?.message || t('subscriptionError')
 			setMessage({ text: errorMessage, type: 'error' })
 		}
 	}
@@ -37,7 +39,7 @@ const MatchDetails = () => {
 				setMatch(response.data)
 				setLoading(false)
 			} catch (error) {
-				console.error('Błąd podczas pobierania szczegółów meczu:', error)
+				console.error(t('errorFetchingMatchDetails'), error)
 				setLoading(false)
 			}
 		}
@@ -45,25 +47,27 @@ const MatchDetails = () => {
 	}, [id])
 
 	if (loading) {
-		return <p className='text-center text-gray-500 mt-8'>Ładowanie...</p>
+		return <p className='text-center text-gray-500 mt-8'>{t('loading')}</p>
 	}
 
 	if (!match) {
-		return <p className='text-center text-gray-500 mt-8'>Mecz nie znaleziony.</p>
+		return <p className='text-center text-gray-500 mt-8'>{t('matchNotFound')}</p>
 	}
 
 	return (
 		<div className='bg-gray-100 min-h-screen p-8'>
 			<h1 className='text-3xl font-bold text-center mb-4'>
-				{match.team_1} vs {match.team_2}
+				{match.team_1} {t('vs')} {match.team_2}
 			</h1>
-			<p className='text-center text-gray-700 mb-8'>Data: {new Date(match.match_date).toLocaleString()}</p>
+			<p className='text-center text-gray-700 mb-8'>
+				{t('matchDate')}: {new Date(match.match_date).toLocaleString()}
+			</p>
 			{message.text && (
 				<p className={`text-center mb-4 ${message.type === 'success' ? 'text-green-500' : 'text-red-500'}`}>
 					{message.text}
 				</p>
 			)}
-			<h2 className='text-2xl font-semibold text-gray-800 mb-4'>Bary transmitujące mecz:</h2>
+			<h2 className='text-2xl font-semibold text-gray-800 mb-4'>{t('barsBroadcastingMatch')}:</h2>
 			<div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6'>
 				{match.Bars && match.Bars.length > 0 ? (
 					match.Bars.map(bar => (
@@ -75,7 +79,7 @@ const MatchDetails = () => {
 							{role === 'Użytkownik' && (
 								<>
 									<label htmlFor={`usersToCome-${bar.id}`} className='block mb-2'>
-										Liczba osób:
+										{t('numberOfPeople')}:
 									</label>
 									<input
 										type='number'
@@ -87,15 +91,15 @@ const MatchDetails = () => {
 									/>
 									<button
 										onClick={() => handleSubscription(bar.id)}
-										className='bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition'>
-										Zapisz się na mecz
+										className='bg-gray-800 text-white px-4 py-2 rounded hover:bg-gray-600 transition'>
+										{t('subscribeToMatch')}
 									</button>
 								</>
 							)}
 						</div>
 					))
 				) : (
-					<p className='text-gray-600 text-center col-span-full'>Brak barów transmitujących ten mecz.</p>
+					<p className='text-gray-600 text-center col-span-full'>{t('noBarsBroadcasting')}</p>
 				)}
 			</div>
 		</div>
