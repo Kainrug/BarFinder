@@ -19,13 +19,14 @@ const MatchDetails = () => {
 
 	const handleSubscription = async barId => {
 		const numberOfUsers = usersToCome[barId] || 1
+		console.log('Number of users:', numberOfUsers)
 		try {
 			await axiosInstance.post('/subscriptions', {
 				Bar_ID: barId,
 				Match_ID: id,
 				users_to_come: numberOfUsers,
 			})
-			setMessage({ text: t('subscriptionSuccess', { numberOfUsers }), type: 'success' })
+			setMessage({ text: t('subscriptionSuccess'), type: 'success' })
 		} catch (error) {
 			const errorMessage = error.response?.data?.message || t('subscriptionError')
 			setMessage({ text: errorMessage, type: 'error' })

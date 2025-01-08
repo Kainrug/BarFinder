@@ -79,7 +79,7 @@ i18n.use(initReactI18next).init({
 				team1Required: 'Team 1 is required.',
 				team2Required: 'Team 2 is required.',
 				sportRequired: 'Sport is required.',
-				subscriptionSuccess: 'Successfully subscribed {numberOfUsers} people to this match!',
+				subscriptionSuccess: 'Successfully subscribed to this match!',
 				subscriptionError: 'Failed to subscribe. Please try again.',
 				errorFetchingMatchDetails: 'Error fetching match details:',
 				barsBroadcastingMatch: 'Bars broadcasting the match',

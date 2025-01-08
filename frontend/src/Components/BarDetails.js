@@ -55,9 +55,13 @@ const BarDetails = () => {
 		}
 		const fetchMatches = async () => {
 			try {
-				const response = await axiosInstance.get(`/match`)
+				const page = 1
+				const limit = 10
+				const response = await axiosInstance.get(`/match`, {
+					params: { page, limit },
+				})
 				console.log(response.data)
-				setMatches(response.data)
+				setMatches(response.data.results)
 			} catch (error) {
 				console.error('Error fetching matches:', error)
 			}
@@ -66,7 +70,7 @@ const BarDetails = () => {
 		fetchBarDetails()
 		fetchReviews()
 		fetchMatches()
-	}, [id])
+	}, [id, userId])
 
 	const handleRatingChange = (event, newValue) => {
 		setUserRating(newValue)
@@ -296,11 +300,15 @@ const BarDetails = () => {
 									onChange={handleSelectMatch}
 									className='w-full p-2 border rounded mb-4'>
 									<option value=''>{t('chooseMatch')}</option>
-									{matches.map(match => (
-										<option key={match.id} value={match.id}>
-											{match.team_1} vs {match.team_2}
-										</option>
-									))}
+									{matches.length > 0 ? (
+										matches.map(match => (
+											<option key={match.id} value={match.id}>
+												{match.team_1} vs {match.team_2}
+											</option>
+										))
+									) : (
+										<option value=''>{t('noMatchesFound')}</option>
+									)}
 								</select>
 							</div>
 							<div className='flex justify-end gap-4'>

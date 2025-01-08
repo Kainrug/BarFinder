@@ -54,7 +54,7 @@ const login = async (req, res) => {
 			return res.status(401).json({ message: 'Nieprawidłowe dane logowania.' })
 		}
 
-		const accessToken = jwt.sign({ id: user.id, role: user.Role.role }, process.env.JWT_SECRET, { expiresIn: '15m' })
+		const accessToken = jwt.sign({ id: user.id, role: user.Role.role }, process.env.JWT_SECRET, { expiresIn: '40m' })
 		const refreshToken = jwt.sign({ id: user.id }, process.env.JWT_REFRESH)
 
 		await RefreshToken.create({
