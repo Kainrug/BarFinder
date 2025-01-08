@@ -189,10 +189,8 @@ const BarDetails = () => {
 					</nav>
 				</div>
 
-				{/* Widok Szczegółów Baru */}
 				{activeTab === 'details' && (
 					<div className='flex flex-wrap -mx-4'>
-						{/* Produkt Images */}
 						<div className='w-full md:w-1/2 px-4 mb-8'>
 							<img
 								src={bar.image_url || 'https://via.placeholder.com/300'}
@@ -212,8 +210,6 @@ const BarDetails = () => {
 								))}
 							</div>
 						</div>
-
-						{/* Produkt Details */}
 						<div className='w-full md:w-1/2 px-4'>
 							<h2 className='text-3xl font-bold mb-2'>{bar.name}</h2>
 							<p className='text-gray-600 mb-4'>{bar.sku}</p>
@@ -221,7 +217,6 @@ const BarDetails = () => {
 								<span className='text-sm text-gray-600'>
 									{bar.averageRating ? Number(bar.averageRating).toFixed(2) : 'Brak oceny'}
 								</span>
-								{/* Ocena read-only (gwiazdki tylko do odczytu) */}
 								<Rating
 									name='simple-controlled'
 									value={bar.averageRating ? Math.round(Number(bar.averageRating) * 2) / 2 : 0}
@@ -240,7 +235,6 @@ const BarDetails = () => {
 								<p className='text-gray-700'>{bar.address}</p>
 							</div>
 
-							{/* Miasto baru */}
 							<div className='flex items-center mb-4'>
 								<span className='text-gray-700 font-semibold'>{t('city')}: </span>
 								<p className='ml-2 text-gray-700'>{bar.city}</p>
@@ -256,7 +250,6 @@ const BarDetails = () => {
 					</div>
 				)}
 
-				{/* Widok Repertuaru Meczów */}
 				{activeTab === 'matches' && bar.Matches && bar.Matches.length > 0 && (
 					<div className='mt-8'>
 						<h3 className='text-2xl font-semibold mb-4'>{t('matchSchedule')}</h3>
@@ -288,7 +281,6 @@ const BarDetails = () => {
 						)}
 					</div>
 				)}
-				{/* Formularz przypisania meczu */}
 				{isMatchFormVisible && (
 					<div className='fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-50'>
 						<div className='bg-white p-6 rounded-lg shadow-lg w-96'>
@@ -327,7 +319,6 @@ const BarDetails = () => {
 					</div>
 				)}
 
-				{/* Sekcja opinii */}
 				{activeTab === 'details' &&
 					reviews.map(review => (
 						<div key={review.id} className='p-4 border-b border-gray-200'>
@@ -360,11 +351,8 @@ const BarDetails = () => {
 						</button>
 					</div>
 				)}
-
-				{/* Komunikat o sukcesie */}
 				{successMessage && <div className='mt-4 bg-green-500 text-white p-4 rounded-md'>{successMessage}</div>}
 
-				{/* Formularz opinii */}
 				{activeTab === 'details' && isReviewFormVisible && !successMessage && (
 					<div className='fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-50'>
 						<div className='bg-white p-6 rounded-lg shadow-lg w-96'>
@@ -392,7 +380,6 @@ const BarDetails = () => {
 						</div>
 					</div>
 				)}
-				{/* Komunikat po dodaniu opinii */}
 				{successMessage && (
 					<div className='fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50 z-50'>
 						<div className='bg-white p-6 rounded-lg shadow-lg w-96'>

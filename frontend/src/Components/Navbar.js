@@ -74,8 +74,6 @@ const Navbar = () => {
 							<XMarkIcon aria-hidden='true' className='hidden size-6 group-data-[open]:block' />
 						</DisclosureButton>
 					</div>
-
-					{/* Logo and Navigation Items */}
 					<div className='flex flex-1 items-center justify-center sm:items-stretch sm:justify-start'>
 						<div className='flex shrink-0 items-center'>
 							<Link to='/' className='flex items-center space-x-3 rtl:space-x-reverse'>

@@ -1,8 +1,10 @@
 import React, { useState } from 'react'
 import axiosInstance from '../Api/axios'
+import { useTranslation } from 'react-i18next'
 
 const AddBar = () => {
 	const [name, setName] = useState('')
+	const { t } = useTranslation()
 	const [address, setAddress] = useState('')
 	const [city, setCity] = useState('')
 	const [description, setDescription] = useState('')
@@ -49,7 +51,7 @@ const AddBar = () => {
 				{/* Formularz do dodania baru */}
 				<div>
 					<label htmlFor='name' className='block text-sm font-medium text-gray-700'>
-						Nazwa
+						{t('name')}
 					</label>
 					<input
 						type='text'
@@ -64,7 +66,7 @@ const AddBar = () => {
 
 				<div>
 					<label htmlFor='address' className='block text-sm font-medium text-gray-700'>
-						Adres
+					{t('address')}
 					</label>
 					<input
 						type='text'
@@ -79,7 +81,7 @@ const AddBar = () => {
 
 				<div>
 					<label htmlFor='city' className='block text-sm font-medium text-gray-700'>
-						Miasto
+						{t('city')}
 					</label>
 					<input
 						type='text'
@@ -94,7 +96,7 @@ const AddBar = () => {
 
 				<div>
 					<label htmlFor='description' className='block text-sm font-medium text-gray-700'>
-						Opis
+						{t('barDescription')}
 					</label>
 					<textarea
 						id='description'
@@ -108,7 +110,7 @@ const AddBar = () => {
 
 				<div>
 					<label htmlFor='imageUrl' className='block text-sm font-medium text-gray-700'>
-						URL zdjęcia
+						{t('imageUrl')}
 					</label>
 					<input
 						type='text'
@@ -124,10 +126,9 @@ const AddBar = () => {
 				<button
 					type='submit'
 					className='w-full py-3 mt-6 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500'>
-					Dodaj bar
+					{t('addBar')}
 				</button>
 
-				{/* Ogólny komunikat o błędach */}
 				{message && <div className='mb-4 text-center text-sm text-red-600'>{message}</div>}
 			</form>
 		</div>

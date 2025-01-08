@@ -5,10 +5,10 @@ import clsx from 'clsx'
 import { useTranslation } from 'react-i18next'
 
 const CityDropdown = ({ onCityChange }) => {
-	// Umieszczamy t() w odpowiednim miejscu
+
 	const { t } = useTranslation()
 
-	// Teraz możemy używać t('noFiltering')
+	
 	const cities = [
 		{ id: 0, name: t('noFiltering') },
 		{ id: 1, name: 'Warszawa' },
@@ -34,7 +34,6 @@ const CityDropdown = ({ onCityChange }) => {
 		<div className='relative mx-auto w-52'>
 			<Listbox value={selectedCity} onChange={handleChange}>
 				<div className='relative'>
-					{/* Button to open the dropdown */}
 					<ListboxButton
 						className={clsx(
 							'relative block w-full rounded-lg bg-gray-700 py-1.5 pr-8 pl-3 text-left text-sm/6 text-white',
@@ -47,7 +46,6 @@ const CityDropdown = ({ onCityChange }) => {
 						/>
 					</ListboxButton>
 
-					{/* Dropdown options */}
 					<ListboxOptions
 						className={clsx(
 							'absolute z-50 mt-1 w-full rounded-lg border border-gray-600 bg-gray-700 text-white p-1 focus:outline-none',

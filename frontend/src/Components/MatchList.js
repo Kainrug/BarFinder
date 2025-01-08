@@ -120,7 +120,6 @@ const MatchesList = () => {
 
 			{showForm && (
 				<form onSubmit={handleFormSubmit} className='mb-8 bg-white p-6 rounded shadow'>
-					{/* Form fields for adding a new match */}
 					<div>
 						<label className='block mb-2 font-bold'>Sport:</label>
 						<input
@@ -171,8 +170,6 @@ const MatchesList = () => {
 					</button>
 				</form>
 			)}
-
-			{/* Renderowanie meczów */}
 			<div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6'>
 				{matches.map(match =>
 					match && match.team_1 && match.team_2 ? (
@@ -202,8 +199,6 @@ const MatchesList = () => {
 					) : null
 				)}
 			</div>
-
-			{/* Paginacja */}
 			<div className='flex justify-center mt-8'>
 				<button onClick={previousPage} className='px-4 py-2 bg-gray-800 text-white rounded mr-4'>
 					{t('previous')}
@@ -218,8 +213,6 @@ const MatchesList = () => {
 					{t('next')}
 				</button>
 			</div>
-
-			{/* Ogólny komunikat o błędach */}
 			{message && <div className='mb-4 text-center text-sm text-red-600'>{message}</div>}
 		</div>
 	)

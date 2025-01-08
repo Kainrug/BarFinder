@@ -105,6 +105,7 @@ i18n.use(initReactI18next).init({
 				doNotHaveAcc: 'You do not have account',
 				previous: 'Previous',
 				next: 'Next',
+				address: 'Address',
 			},
 		},
 		pl: {
@@ -209,6 +210,7 @@ i18n.use(initReactI18next).init({
 				doNotHaveAcc: 'Nie masz konta',
 				previous: 'Poprzednia',
 				next: 'Następna',
+				address: 'Adres',
 			},
 		},
 	},
